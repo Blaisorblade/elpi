@@ -81,15 +81,33 @@ module Ast = struct
   type program = Ast.Program.t
   type query = Ast.Goal.t
   module Loc = Util.Loc
+  module Goal = Ast.Goal
 end
+
+let test_parser2_on_goal x =
+  try
+    let g = Parser2.goal Lexer2.token x in
+    Printf.eprintf "parser2: %s\n%!" (Ast.Goal.show g)
+  with e -> Printf.eprintf "parser2: %s\n%!" (Printexc.to_string e)
 
 module Parse = struct
   let program ~elpi:(ps,_) ?(print_accumulated_files=false) =
     Parser.parse_program ps ~print_accumulated_files
   let program_from_stream ~elpi:(ps,_) ?(print_accumulated_files=false) =
     Parser.parse_program_from_stream ps ~print_accumulated_files
-  let goal loc s = Parser.parse_goal ~loc s
-  let goal_from_stream loc s = Parser.parse_goal_from_stream ~loc s
+  let goal loc s =
+    test_parser2_on_goal (Lexing.from_string s);
+    Parser.parse_goal ~loc s
+  let goal_from_stream loc s =
+    let f buf n =
+      let rec aux i =
+        if i >= n then i else
+        match Stream.peek s with
+        | None -> i
+        | Some x -> Bytes.set buf i x; aux (i+1) in
+      aux 0 in
+    test_parser2_on_goal (Lexing.from_function f);
+    Parser.parse_goal_from_stream ~loc s
   exception ParseError = Parser.ParseError
 
   let resolve_file = Parser.resolve
