@@ -46,6 +46,7 @@ clean:
 
 tests:
 	$(MAKE) build
+	dune runtest
 	ulimit -s $(STACK); OCAMLRUNPARAM=l=$(STACK) \
 		tests/test.exe \
 		--seed $$RANDOM \

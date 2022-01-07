@@ -86,7 +86,7 @@ end
 
 let test_parser2_on_goal x =
   try
-    let g = Parser2.goal Lexer2.token x in
+    let g = Parser2.goal Lexer.token x in
     Printf.eprintf "parser2: %s\n%!" (Ast.Goal.show g)
   with e -> Printf.eprintf "parser2: %s\n%!" (Printexc.to_string e)
 
