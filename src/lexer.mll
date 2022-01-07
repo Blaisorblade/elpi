@@ -36,7 +36,7 @@ and multilinecomment nest = parse
 and string b = parse
 | '\n' as c { new_line lexbuf; Buffer.add_char b c; string b lexbuf }
 | '"' { STRING (Buffer.contents b) }
-| _ # '"' as c { Buffer.add_char b c; string b lexbuf }
+| _ # '"' as c { Buffer.add_char b c; skip lexbuf 1; string b lexbuf }
 
 and token = parse
 | ( ' ' | '\t' | '\r' ) { skip lexbuf 1; token lexbuf }
