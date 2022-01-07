@@ -13,6 +13,10 @@
   (private_modules util parser ast compiler data ptmap builtin_stdlib builtin_map builtin_set runtime runtime_trace_off parser2 lexer2)
 )
 
+
+(menhir (modules parser2))
+(ocamllex (modules lexer2))
+
 (rule (with-stdout-to builtin_stdlib.ml (progn
   (echo "let code = {code|#line 0 \"builtin_stdlib.elpi\"\n")
   (cat builtin_stdlib.elpi)
