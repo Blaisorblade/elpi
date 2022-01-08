@@ -5,6 +5,7 @@
 %token < float > FLOAT
 %token < string > STRING
 %token FRESHUV
+%token CUT
 %token COLON
 %token BIND
 %token LPAREN
@@ -14,7 +15,7 @@
 %token LCURLY
 %token RCURLY
 %token PIPE
-%token QUOTED
+%token < string > QUOTED
 %token SHORTEN
 %token ACCUMULATE
 %token LOCAL
@@ -37,6 +38,21 @@
 %token EXPORTDEF
 %token CLOSED
 %token FIXITY
-%token <string> SYMBOL
+%token <string> SYMB_PLUS
+%token <string> SYMB_TIMES
+%token <string> SYMB_MINUS
+%token <string> SYMB_EXP
+%token <string> SYMB_LT
+%token <string> SYMB_GT
+%token <string> SYMB_EQ
+%token <string> SYMB_AT
+%token <string> SYMB_QMARK
+%token <string> SYMB_BTICK
+%token <string> SYMB_TICK
+%token <string> SYMB_SHARP
+%token <string> SYMB_TILDE
+%token <string> SYMB_AND
+%token <string> SYMB_SLASH
+
 
 %%

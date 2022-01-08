@@ -9,7 +9,7 @@
 
     let skip b n =
       let open Lexing in
-      b.lex_curr_p <- { b.lex_curr_p with pos_cnum = b.lex_curr_p.pos_cnum + n }
+      b.lex_curr_p <- { b.lex_curr_p with pos_cnum = b.lex_curr_p.pos_cnum + n }      
 
 }
 
@@ -19,9 +19,15 @@ let pnum = (digit +)
 
 let num = '-' ? pnum
 
-let stringchar = _ # '"'
-
-let string = ( '"' '"' | stringchar) * '"'
+let ucase = [ 'A' - 'Z' ]
+let lcase = [ 'a' - 'z' ]
+let schar2 = '+'  | '*' | '/' | '^' | '<' | '>' | '`' | '\'' | '?' | '@' | '#' | '~' | '=' | '&' | '!'
+let schar = schar2 | '-' | '$' | '_'
+let idchar = lcase | ucase | digit | schar
+let idcharstar = idchar *
+let idcharstarns = (idchar | "." ( ucase | lcase )) *
+let symbchar = lcase | ucase | digit | schar | ':'
+let symbcharstar = symbchar *
 
 rule linecomment = parse
 | '\n' { new_line lexbuf; token lexbuf }
@@ -34,9 +40,51 @@ and multilinecomment nest = parse
 | _ { skip lexbuf 1; multilinecomment nest lexbuf }
 
 and string b = parse
-| '\n' as c { new_line lexbuf; Buffer.add_char b c; string b lexbuf }
+| '\n'     { Buffer.add_char b '\n'; new_line lexbuf; string b lexbuf }
+| '\\' 'n' { Buffer.add_char b '\n'; skip lexbuf 2; string b lexbuf }
+| '\\' 'b' { Buffer.add_char b '\b'; skip lexbuf 2; string b lexbuf }
+| '\\' 't' { Buffer.add_char b '\t'; skip lexbuf 2; string b lexbuf }
+| '\\' 'r' { Buffer.add_char b '\r'; skip lexbuf 2; string b lexbuf }
+| '\\' '"' { Buffer.add_char b '"';  skip lexbuf 2; string b lexbuf }
+| '"' '"'  { Buffer.add_char b '"';  skip lexbuf 2; string b lexbuf }
 | '"' { STRING (Buffer.contents b) }
 | _ # '"' as c { Buffer.add_char b c; skip lexbuf 1; string b lexbuf }
+
+and quoted n = parse
+| '{' { skip lexbuf 1; quoted (n+1) lexbuf }
+| '\n' { let b = Buffer.create 80 in Buffer.add_char b '\n'; skip lexbuf 1; new_line lexbuf; quoted_inner b n 0 lexbuf }
+| _ as c { let b = Buffer.create 80 in Buffer.add_char b c; skip lexbuf 1; quoted_inner b n 0 lexbuf }
+
+and quoted_inner b n l = parse
+| '}' {
+    Buffer.add_char b '}'; skip lexbuf 1; 
+    try lookahead_close b (n-1) lexbuf;
+      if l = 0 then begin
+        lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_cnum = lexbuf.lex_curr_p.pos_cnum - 1};
+        QUOTED (Buffer.sub b 0 (Buffer.length b -n))
+      end
+      else quoted_inner b n (l-1) lexbuf
+    with Failure _ -> quoted_inner b n l lexbuf
+  }
+| '{' {
+    Buffer.add_char b '{'; skip lexbuf 1; 
+    try lookahead_open b (n-1) lexbuf; quoted_inner b n (l+1) lexbuf
+    with Failure _ -> quoted_inner b n l lexbuf
+  }
+| '\n' { Buffer.add_char b '\n'; new_line lexbuf; quoted_inner b n l lexbuf }
+| _ as c { Buffer.add_char b c; quoted_inner b n l lexbuf }
+
+and lookahead_close b n = parse
+| '}' {
+    Buffer.add_char b '}'; skip lexbuf 1; 
+    if n = 1 then () else lookahead_close b (n-1) lexbuf
+  }
+
+and lookahead_open b n = parse
+| '{' {
+    Buffer.add_char b '{'; skip lexbuf 1; 
+    if n = 1 then () else lookahead_open b (n-1) lexbuf
+  }
 
 and token = parse
 | ( ' ' | '\t' | '\r' ) { skip lexbuf 1; token lexbuf }
@@ -44,13 +92,14 @@ and token = parse
 | '%' { linecomment lexbuf }
 | "/*" { multilinecomment 0 lexbuf }
 | "." { FULLSTOP }
-| ['a'-'z'] + as c { CONSTANT c }
-| ":-" { VDASH }
+| ucase idcharstar as c { CONSTANT c }
+| lcase idcharstarns as c { CONSTANT c }
+| "_" idchar + as c { CONSTANT c }
+| "_" { FRESHUV }
 | num as i { INTEGER (int_of_string i) }
 | num "." pnum as f { FLOAT (float_of_string f) }
 | "." pnum as f { FLOAT (float_of_string f) }
 | '"' { string (Buffer.create 80) lexbuf }
-| "_" { FRESHUV }
 | ":" { COLON }
 | "\\" { BIND }
 | "(" { LPAREN }
@@ -60,7 +109,7 @@ and token = parse
 | "{" { LCURLY }
 | "}" { RCURLY }
 | "|" { PIPE }
-| "" { QUOTED }
+| "{{" { skip lexbuf 2; quoted 2 lexbuf }
 | "shorten" { SHORTEN }
 | "accumulate" { ACCUMULATE }
 | "local" { LOCAL }
@@ -83,3 +132,20 @@ and token = parse
 | "exportdef" { EXPORTDEF }
 | "closed" { CLOSED }
 | ("infix" | "infixl" | "infixr" | "prefix" | "prefixr" | "postfix" | "postfixl" ) { FIXITY }
+| '+' symbcharstar as s { SYMB_PLUS s }
+| '*' symbcharstar as s { SYMB_TIMES s }
+| '^' symbcharstar as s { SYMB_EXP s }
+| '-' symbcharstar as s { SYMB_MINUS s }
+| '=' symbcharstar as s { SYMB_EQ s }
+| '<' symbcharstar as s { SYMB_LT s }
+| '>' symbcharstar as s { SYMB_GT s }
+| '~' symbcharstar as s { SYMB_TILDE s }
+| '#' symbcharstar as s { SYMB_SHARP s }
+| '&' symbcharstar as s { SYMB_AND s }
+| '?' symbcharstar as s { SYMB_QMARK s }
+| '@' symbcharstar as s { SYMB_AT s }
+| '\'' symbcharstar as s { SYMB_TICK s }
+| '`' symbcharstar as s { SYMB_BTICK s }
+| '/' symbcharstar as s { SYMB_SLASH s }
+| "!" { CUT }
+| ":-" { VDASH }

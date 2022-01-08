@@ -1,45 +1,60 @@
 open Elpi.UnitTests
-type t = Tokens.token = 
-| VDASH
-| USEONLY
-| TYPEABBREV
-| TYPE
-| SYMBOL of (string)
-| STRING of ( string )
-| SIG
-| SHORTEN
-| RULE
-| RPAREN
-| RCURLY
-| RBRACKET
-| QUOTED
-| PRED
-| PIPE
-| NAMESPACE
-| MODULE
-| MODE
-| MACRO
-| LPAREN
-| LOCALKIND
-| LOCAL
-| LCURLY
-| LBRACKET
-| KIND
-| INTEGER of ( int )
-| IMPORT
-| FULLSTOP
-| FRESHUV
-| FLOAT of ( float )
-| FIXITY
-| EXTERNAL
-| EXPORTDEF
-| CONSTRAINT
-| CONSTANT of ( string )
-| COLON
-| CLOSED
-| BIND
-| ACCUM_SIG
-| ACCUMULATE
+type t = Tokens.token =
+  | VDASH
+  | USEONLY
+  | TYPEABBREV
+  | TYPE
+  | SYMB_TIMES of (string)
+  | SYMB_TILDE of (string)
+  | SYMB_TICK of (string)
+  | SYMB_SLASH of (string)
+  | SYMB_SHARP of (string)
+  | SYMB_QMARK of (string)
+  | SYMB_PLUS of (string)
+  | SYMB_MINUS of (string)
+  | SYMB_LT of (string)
+  | SYMB_GT of (string)
+  | SYMB_EXP of (string)
+  | SYMB_EQ of (string)
+  | SYMB_BTICK of (string)
+  | SYMB_AT of (string)
+  | SYMB_AND of (string)
+  | STRING of ( string )
+  | SIG
+  | SHORTEN
+  | RULE
+  | RPAREN
+  | RCURLY
+  | RBRACKET
+  | QUOTED of ( string )
+  | PRED
+  | PIPE
+  | NAMESPACE
+  | MODULE
+  | MODE
+  | MACRO
+  | LPAREN
+  | LOCALKIND
+  | LOCAL
+  | LCURLY
+  | LBRACKET
+  | KIND
+  | INTEGER of ( int )
+  | IMPORT
+  | FULLSTOP
+  | FRESHUV
+  | FLOAT of ( float )
+  | FIXITY
+  | EXTERNAL
+  | EXPORTDEF
+  | CUT
+  | CONSTRAINT
+  | CONSTANT of ( string )
+  | COLON
+  | CLOSED
+  | BIND
+  | ACCUM_SIG
+  | ACCUMULATE
 [@@deriving show]
 
 let error s n msg =
@@ -94,4 +109,32 @@ let () =
   test  "3/*\n.*/3"                  [T(INTEGER 3, 1, 0, 1); T(INTEGER 3, 2, 4, 8)];
   test  "3/*\n/*\n*/*/3"             [T(INTEGER 3, 1, 0, 1); T(INTEGER 3, 3, 7, 12)];
   test  "3/*"                        [T(INTEGER 3, 1, 0, 1); E];
+  (*    01234567890123456789012345 *)
+  test {|"a"|}                        [T(STRING "a", 1, 0, 3)];
+  test {|"a""b"|}                     [T(STRING "a\"b", 1, 0, 6)];
+  test {|"a\nb"|}                     [T(STRING "a\nb", 1, 0, 6)];
+  test {|"a
+b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
+  (*    01234567890123456789012345 *)
+  test  "x"                           [T(CONSTANT "x", 1, 0, 1)];
+  test  "x-y"                         [T(CONSTANT "x-y", 1, 0, 3)];
+  test  "-y"                          [T(SYMB_MINUS "-y", 1, 0, 2)];
+  test  "_y"                          [T(CONSTANT "_y", 1, 0, 2)];
+  test  "_X"                          [T(CONSTANT "_X", 1, 0, 2)];
+  test  "X_"                          [T(CONSTANT "X_", 1, 0, 2)];
+  test  "x?"                          [T(CONSTANT "x?", 1, 0, 2)];
+  test  "X"                           [T(CONSTANT "X", 1, 0, 1)];
+  test  "X1>@!"                       [T(CONSTANT "X1>@!", 1, 0, 5)];
+  test  "a.B.c"                       [T(CONSTANT "a.B.c", 1, 0, 5)];
+  test  "a.B."                        [T(CONSTANT "a.B", 1, 0, 3); T(FULLSTOP, 1, 0, 4)];
+  test  "a.>"                         [T(CONSTANT "a", 1, 0, 1); T(FULLSTOP, 1, 0, 2); T(SYMB_GT ">", 1, 0, 3)];
+  (*    01234567890123456789012345 *)
+  test  "-->"                         [T(SYMB_MINUS "-->", 1, 0, 3)];
+  test  "x.y->z"                      [T(CONSTANT "x.y->z", 1, 0, 6)];
+  (*    01234567890123456789012345 *)
+  test  "{{{ }} }}}"                  [T(QUOTED " }} ", 1, 0, 10)];
+  test  "{{ {{ } }} }}"               [T(QUOTED " {{ } }} ", 1, 0, 13)];
+  test  "{{ x }}3"                    [T(QUOTED " x ", 1, 0, 7); T(INTEGER 3, 1, 0, 8)];
+  test  "{{{ x }}}3"                  [T(QUOTED " x ", 1, 0, 9); T(INTEGER 3, 1, 0, 10)];
+  test  "{{\n x }}3"                  [T(QUOTED "\n x ", 2, 4, 8); T(INTEGER 3, 2, 4, 9)];
   (*    01234567890123456789012345 *)
