@@ -10,7 +10,7 @@
   (libraries re.str camlp5.gramlib unix stdlib-shims)
   (flags -linkall)
   (modules elpi util parser ast compiler data ptmap builtin builtin_checker builtin_stdlib builtin_map builtin_set API runtime_trace_off runtime parser2 tokens lexer)
-  (private_modules util parser ast compiler data ptmap builtin_stdlib builtin_map builtin_set runtime runtime_trace_off parser2)
+  (private_modules util parser ast compiler data ptmap builtin_stdlib builtin_map builtin_set runtime runtime_trace_off)
 )
 
 (menhir (modules tokens) (flags --only-tokens))
@@ -18,6 +18,7 @@
 (ocamllex (modules lexer))
 
 (test (name test_lexer) (libraries elpi) (modules test_lexer) (preprocess (pps ppx_deriving.std)))
+(test (name test_parser) (libraries elpi) (modules test_parser) (preprocess (pps ppx_deriving.std)))
 
 (rule (with-stdout-to builtin_stdlib.ml (progn
   (echo "let code = {code|#line 0 \"builtin_stdlib.elpi\"\n")

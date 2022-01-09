@@ -47,6 +47,7 @@ type t = Tokens.token =
   | FIXITY
   | EXTERNAL
   | EXPORTDEF
+  | EOF
   | CUT
   | CONSTRAINT
   | CONSTANT of ( string )
@@ -138,3 +139,4 @@ b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
   test  "{{{ x }}}3"                  [T(QUOTED " x ", 1, 0, 9); T(INTEGER 3, 1, 0, 10)];
   test  "{{\n x }}3"                  [T(QUOTED "\n x ", 2, 4, 8); T(INTEGER 3, 2, 4, 9)];
   (*    01234567890123456789012345 *)
+  test  "foo :- bar."                 [T(CONSTANT "foo", 1, 0, 3); T(VDASH, 1, 0, 6); T(CONSTANT "bar", 1, 0, 10); T(FULLSTOP, 1, 0, 11)]

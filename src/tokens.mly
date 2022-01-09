@@ -53,6 +53,7 @@
 %token <string> SYMB_TILDE
 %token <string> SYMB_AND
 %token <string> SYMB_SLASH
+%token EOF
 
 
 %%
