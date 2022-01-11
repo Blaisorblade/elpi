@@ -4,6 +4,7 @@
 
 open Util
 
+module Loc = Loc
 module Func = struct
 
   module Self = struct

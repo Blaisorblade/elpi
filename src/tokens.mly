@@ -55,5 +55,4 @@
 %token <string> SYMB_SLASH
 %token EOF
 
-
 %%

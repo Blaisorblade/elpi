@@ -4,6 +4,8 @@
 
 open Util
 
+module Loc = Loc
+
 (* Prolog functors *)
 module Func : sig
   type t

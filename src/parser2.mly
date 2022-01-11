@@ -24,8 +24,12 @@ let loc (startpos, endpos) = {
 (* entry points *)
 %start program
 %start goal
-%start decl
-%start term
+
+%nonassoc VDASH CONSTANT INTEGER FLOAT STRING
+%nonassoc LPAREN
+%left SYMB_PLUS
+%right BIND
+
 
 %%
 program:
@@ -36,7 +40,7 @@ decl:
 | c = clause; FULLSTOP { Program.Clause c }
 
 goal:
-| g = term { ( Util.Loc.initial "oops", g ) }
+| g = term; EOF { ( Util.Loc.initial "oops", g ) }
 
 clause:
 | hd = term; VDASH; hyps = term {
@@ -46,18 +50,13 @@ clause:
     }
   }
 
+
 term:
 | t = CONSTANT { Term.mkCon t }
-(*) t = CONSTANT; BIND; b = term { Term.mkLam t b }
-
+(*| t = CONSTANT; BIND; b = term { Term.mkLam t b }*)
 | x = INTEGER { Term.mkC (cint.Util.CData.cin x)}
 | x = FLOAT { Term.mkC (cfloat.Util.CData.cin x)}
 | x = STRING { Term.mkC (cstring.Util.CData.cin x)}
-*)
-(*| hd = term; arg = term; args = list(term) { Term.mkApp (loc $loc(hd)) (hd :: arg :: args) }
-*)
-(*
-list(X):
-| { [] }
-| hd = X ; tl = list(X) { hd :: tl }
-*)
+| a = term; VDASH; b = term {Term.(mkApp (loc $loc(a)) [mkCon ":-";a;b]) } 
+| hd = term; arg = term; { Term.mkApp (loc $loc(hd)) [hd ; arg] } %prec BIND
+| LPAREN; t = term; RPAREN { t }

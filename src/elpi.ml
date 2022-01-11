@@ -6,4 +6,5 @@ module UnitTests = struct
   module Tokens = Tokens
   module Lexer = Lexer
   module Parser = Parser2
+  module Ast = Ast
 end

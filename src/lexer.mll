@@ -149,3 +149,4 @@ and token = parse
 | '/' symbcharstar as s { SYMB_SLASH s }
 | "!" { CUT }
 | ":-" { VDASH }
+| eof { EOF }
