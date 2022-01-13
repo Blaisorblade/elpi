@@ -131,15 +131,21 @@ and token = parse
 | "useonly" { USEONLY }
 | "exportdef" { EXPORTDEF }
 | "closed" { CLOSED }
+| "as" { AS }
+| "is" { IS }
+| "->" { ARROW }
+| "=>" { DARROW }
+| "div" { DIV }
+| "mod" { MOD }
 | ("infix" | "infixl" | "infixr" | "prefix" | "prefixr" | "postfix" | "postfixl" ) { FIXITY }
-| '+' symbcharstar as s { SYMB_PLUS s }
-| '*' symbcharstar as s { SYMB_TIMES s }
+| ('+' symbcharstar | "r+" | "i+" | "s+") as s { SYMB_PLUS s }
+| ('*' symbcharstar | "r*" | "i*" | "s*") as s { SYMB_TIMES s }
+| ('-' symbcharstar | "r-" | "i-" | "s-") as s { SYMB_MINUS s }
+| ('<' symbcharstar | "r<" | "i<" | "s<" | "r=<" | "i=<" | "s=<") as s { SYMB_LT s }
+| ('>' symbcharstar | "r<" | "i<" | "s>" | "r>=" | "i>=" | "s>=") as s { SYMB_GT s }
+| ('~' symbcharstar | "r~" | "i~") as s { SYMB_TILDE s }
 | '^' symbcharstar as s { SYMB_EXP s }
-| '-' symbcharstar as s { SYMB_MINUS s }
 | '=' symbcharstar as s { SYMB_EQ s }
-| '<' symbcharstar as s { SYMB_LT s }
-| '>' symbcharstar as s { SYMB_GT s }
-| '~' symbcharstar as s { SYMB_TILDE s }
 | '#' symbcharstar as s { SYMB_SHARP s }
 | '&' symbcharstar as s { SYMB_AND s }
 | '?' symbcharstar as s { SYMB_QMARK s }
@@ -147,6 +153,11 @@ and token = parse
 | '\'' symbcharstar as s { SYMB_TICK s }
 | '`' symbcharstar as s { SYMB_BTICK s }
 | '/' symbcharstar as s { SYMB_SLASH s }
+| ',' { CONJ }
+| ';' { OR }
 | "!" { CUT }
 | ":-" { VDASH }
+| "?-" { QDASH }
+| "pi" { PI }
+| "sigma" { SIGMA }
 | eof { EOF }

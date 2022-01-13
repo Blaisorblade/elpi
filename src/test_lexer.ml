@@ -20,6 +20,7 @@ type t = Tokens.token =
   | SYMB_AT of (string)
   | SYMB_AND of (string)
   | STRING of ( string )
+  | SIGMA
   | SIG
   | SHORTEN
   | RULE
@@ -27,11 +28,15 @@ type t = Tokens.token =
   | RCURLY
   | RBRACKET
   | QUOTED of ( string )
+  | QDASH
   | PRED
   | PIPE
+  | PI
+  | OR
   | NAMESPACE
   | MODULE
   | MODE
+  | MOD
   | MACRO
   | LPAREN
   | LOCALKIND
@@ -39,6 +44,7 @@ type t = Tokens.token =
   | LCURLY
   | LBRACKET
   | KIND
+  | IS
   | INTEGER of ( int )
   | IMPORT
   | FULLSTOP
@@ -48,12 +54,17 @@ type t = Tokens.token =
   | EXTERNAL
   | EXPORTDEF
   | EOF
+  | DIV
+  | DARROW
   | CUT
   | CONSTRAINT
   | CONSTANT of ( string )
+  | CONJ
   | COLON
   | CLOSED
   | BIND
+  | AS
+  | ARROW
   | ACCUM_SIG
   | ACCUMULATE
 [@@deriving show]
@@ -139,4 +150,8 @@ b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
   test  "{{{ x }}}3"                  [T(QUOTED " x ", 1, 0, 9); T(INTEGER 3, 1, 0, 10)];
   test  "{{\n x }}3"                  [T(QUOTED "\n x ", 2, 4, 8); T(INTEGER 3, 2, 4, 9)];
   (*    01234567890123456789012345 *)
-  test  "foo :- bar."                 [T(CONSTANT "foo", 1, 0, 3); T(VDASH, 1, 0, 6); T(CONSTANT "bar", 1, 0, 10); T(FULLSTOP, 1, 0, 11)]
+  test  "foo :- bar."                 [T(CONSTANT "foo", 1, 0, 3); T(VDASH, 1, 0, 6); T(CONSTANT "bar", 1, 0, 10); T(FULLSTOP, 1, 0, 11)];
+  test  "foo :- x \\ bar."            [T(CONSTANT "foo", 1, 0, 3); T(VDASH, 1, 0, 6); T(CONSTANT "x", 1, 0, 8); T(BIND, 1, 0, 10); T(CONSTANT "bar", 1, 0, 14); T(FULLSTOP, 1, 0, 15)];
+  test  "foo, bar"                    [T(CONSTANT "foo", 1, 0, 3); T(CONJ, 1, 0, 4); T(CONSTANT "bar", 1, 0, 8) ];
+  test  "[]"                          [T(LBRACKET, 1, 0, 1); T(RBRACKET, 1, 0, 2)];
+  

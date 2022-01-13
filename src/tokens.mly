@@ -1,6 +1,7 @@
 %token FULLSTOP
 %token < string > CONSTANT
 %token VDASH
+%token QDASH
 %token < int > INTEGER
 %token < float > FLOAT
 %token < string > STRING
@@ -15,6 +16,12 @@
 %token LCURLY
 %token RCURLY
 %token PIPE
+%token AS
+%token IS
+%token ARROW
+%token DARROW
+%token DIV
+%token MOD
 %token < string > QUOTED
 %token SHORTEN
 %token ACCUMULATE
@@ -38,6 +45,8 @@
 %token EXPORTDEF
 %token CLOSED
 %token FIXITY
+%token PI
+%token SIGMA
 %token <string> SYMB_PLUS
 %token <string> SYMB_TIMES
 %token <string> SYMB_MINUS
@@ -52,6 +61,8 @@
 %token <string> SYMB_SHARP
 %token <string> SYMB_TILDE
 %token <string> SYMB_AND
+%token CONJ
+%token OR
 %token <string> SYMB_SLASH
 %token EOF
 
