@@ -96,9 +96,6 @@ cterm:
 
 oterm:
 | t = CONSTANT; BIND; b = term { mkLam t b }
-| t = mixfix { t }
-
-mixfix:
 | l = term; s = SYMB_PLUS;  r = term { App(mkCon s,[l;r]) }
 | l = term; s = SYMB_TIMES; r = term { App(mkCon s,[l;r]) }
 | l = term; s = SYMB_MINUS; r = term { App(mkCon s,[l;r]) }
