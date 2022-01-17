@@ -31,10 +31,27 @@ let test s x y w z att b =
     let p = Parser.program Lexer.token lexbuf in
     if p <> exp then
       error s p exp
-    with Parser.Error _stateid ->
-      Printf.eprintf "error parsing '%s' at char %d\n%!" s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum;
+    with Parser.Error stateid ->
+      let message = ParserMessages.message stateid in
+      Printf.eprintf "error parsing '%s' at char %d\n%s%!" s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum message;
       exit 1
-
+      
+let testF s i msg =
+  let lexbuf = Lexing.from_string s in
+  try
+    let _ = Parser.program Lexer.token lexbuf in
+    Printf.eprintf "error, '%s' should not parse\n%!" s;
+    exit 1
+  with Parser.Error stateid ->
+    let message = ParserMessages.message stateid in
+    if not @@ Str.string_match (Str.regexp_case_fold msg) message 0 then begin
+      Printf.eprintf "error, '%s' fails with message '%s'\nwhich does not match '%s'\n%!" s message msg;   
+      exit 1;
+    end;
+    if lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum <> i then begin
+      Printf.eprintf "error, '%s' fails at %d instead of %d\n%!" s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum i;
+      exit 1;
+    end
 
 let (|-) a b = App (mkCon ":-",[a;b])
 let (@) a b = App (mkCon a,b)
@@ -63,4 +80,8 @@ let _ =
   test  "[f a,b]."          0 7  1 0 [] (mkSeq ["f" @ [c"a"];c"b";mkNil]);
   test  "[(a,b)]."          0 7  1 0 [] (mkSeq ["," @ [c"a";c"b"];mkNil]);
   test  "[a,b|c]."          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);
-
+  (*    01234567890123456789012345 *)
+  testF ":-"                2 "unexpected start";
+  testF "+"                 1 "unexpected start";
+  testF "x. x)"             5 "unexpected ')'";
+  testF "x. +"              4 "unexpected start";

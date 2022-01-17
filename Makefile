@@ -28,6 +28,11 @@ DUNE_OPTS=
 CP5:=$(shell ocamlfind query camlp5)
 
 build:
+	cp -f src/parser2Messages.messages /tmp/parserMessages.messages.bak
+	dune exec menhir -- src/parser2.mly src/tokens.mly --base parser2 \
+		--update-errors src/parser2Messages.messages \
+		> /tmp/parserMessages.updated
+	mv /tmp/parserMessages.updated src/parser2Messages.messages
 	dune build $(DUNE_OPTS) @all
 	# hack: link camlp5.gramlib in the plugin
 	ocamlfind opt -shared -linkall -o _build/install/default/lib/elpi/elpi.cmxs \

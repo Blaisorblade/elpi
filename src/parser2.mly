@@ -28,6 +28,8 @@ let desugar_multi_binder loc = function
 
 %}
 
+%on_error_reduce term
+
 (* non terminals *)
 %type < Program.t > program
 %type < Goal.t > goal
