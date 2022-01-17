@@ -87,6 +87,17 @@ and lookahead_open b n = parse
   }
 
 and token = parse
+| ("#line" " "+ (num as n) " "+ '"' ([^'"']+ as f) '"' " "* '\n' as x) {
+    let open Lexing in
+    lexbuf.lex_curr_p <- {
+      pos_fname = f;
+      pos_lnum = int_of_string n;
+      pos_cnum = 0;
+      pos_bol = lexbuf.lex_curr_p.pos_bol;
+    };
+    lexbuf.lex_abs_pos <- - (String.length x) - lexbuf.lex_start_p.pos_cnum;
+    lexbuf.lex_start_p <- lexbuf.lex_curr_p;
+    token lexbuf }
 | ( ' ' | '\t' | '\r' ) { skip lexbuf 1; token lexbuf }
 | '\n' { new_line lexbuf; token lexbuf }
 | '%' { linecomment lexbuf }

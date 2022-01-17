@@ -159,4 +159,11 @@ b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
   (*    01234567890123456789012345 *)
   test  "X"                           [T(CONSTANT "X", 1, 0, 1) ];
   test  "is"                          [T(IS, 1, 0, 2) ];
+  test  "#line 3 \"xx\"\na"           [T(CONSTANT "a", 3, 0, 1) ];
+  test  "b\n#line 3 \"xx\"\na"        [T(CONSTANT "b", 1, 0, 1);T(CONSTANT "a", 3, 2, 1) ];
+  test  {|
+b
+c
+#line 7 "xx"
+a|}                      [T(CONSTANT "b", 2, 1, 2);T(CONSTANT "c", 3, 3, 4);T(CONSTANT "a", 7, 5, 1) ];
   
