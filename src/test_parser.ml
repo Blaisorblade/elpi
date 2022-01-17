@@ -31,7 +31,7 @@ let test s x y w z att b =
     let p = Parser.program Lexer.token lexbuf in
     if p <> exp then
       error s p exp
-    with Parser.Error ->
+    with Parser.Error _stateid ->
       Printf.eprintf "error parsing '%s' at char %d\n%!" s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum;
       exit 1
 
@@ -63,3 +63,4 @@ let _ =
   test  "[f a,b]."          0 7  1 0 [] (mkSeq ["f" @ [c"a"];c"b";mkNil]);
   test  "[(a,b)]."          0 7  1 0 [] (mkSeq ["," @ [c"a";c"b"];mkNil]);
   test  "[a,b|c]."          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);
+  test  ":-"          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);

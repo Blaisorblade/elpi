@@ -9,13 +9,16 @@
     ))
   (libraries re.str camlp5.gramlib unix stdlib-shims)
   (flags -linkall)
-  (modules elpi util parser ast compiler data ptmap builtin builtin_checker builtin_stdlib builtin_map builtin_set API runtime_trace_off runtime parser2 tokens lexer)
-  (private_modules parser compiler data ptmap builtin_stdlib builtin_map builtin_set runtime runtime_trace_off)
+  (modules elpi util parser ast compiler data ptmap builtin builtin_checker builtin_stdlib builtin_map builtin_set API runtime_trace_off runtime parser2 tokens lexer parser2Messages)
+  (private_modules parser compiler data ptmap builtin_stdlib builtin_map builtin_set runtime runtime_trace_off parser2Messages)
 )
 
 (menhir (modules tokens) (flags --only-tokens))
-(menhir (modules parser2 tokens) (flags --external-tokens Tokens) (merge_into parser2))
+(menhir (modules parser2 tokens) (flags --external-tokens Tokens --exn-carries-state) (merge_into parser2))
 (ocamllex (modules lexer))
+
+(rule ;(deps parser2Messages.check)
+  (action (with-stdout-to parser2Messages.ml (run menhir %{dep:tokens.mly} %{dep:parser2.mly} --base parser2 --compile-errors %{dep:parser2Messages.messages} ))))
 
 (test (name test_lexer) (libraries elpi) (modules test_lexer) (preprocess (pps ppx_deriving.std)))
 (test (name test_parser) (libraries elpi) (modules test_parser) (preprocess (pps ppx_deriving.std)))
