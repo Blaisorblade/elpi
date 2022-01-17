@@ -63,4 +63,4 @@ let _ =
   test  "[f a,b]."          0 7  1 0 [] (mkSeq ["f" @ [c"a"];c"b";mkNil]);
   test  "[(a,b)]."          0 7  1 0 [] (mkSeq ["," @ [c"a";c"b"];mkNil]);
   test  "[a,b|c]."          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);
-  test  ":-"          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);
+
