@@ -154,4 +154,7 @@ b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
   test  "foo :- x \\ bar."            [T(CONSTANT "foo", 1, 0, 3); T(VDASH, 1, 0, 6); T(CONSTANT "x", 1, 0, 8); T(BIND, 1, 0, 10); T(CONSTANT "bar", 1, 0, 14); T(FULLSTOP, 1, 0, 15)];
   test  "foo, bar"                    [T(CONSTANT "foo", 1, 0, 3); T(CONJ, 1, 0, 4); T(CONSTANT "bar", 1, 0, 8) ];
   test  "[]"                          [T(LBRACKET, 1, 0, 1); T(RBRACKET, 1, 0, 2)];
+  (*    01234567890123456789012345 *)
+  test  "X"                           [T(CONSTANT "X", 1, 0, 1) ];
+  test  "is"                          [T(IS, 1, 0, 2) ];
   

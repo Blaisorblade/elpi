@@ -70,6 +70,7 @@ decl:
 
 goal:
 | g = term; EOF { ( loc $loc , g ) }
+| g = term; FULLSTOP { ( loc $loc , g ) }
 
 clause:
 | body = term; {

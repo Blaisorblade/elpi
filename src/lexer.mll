@@ -92,8 +92,6 @@ and token = parse
 | '%' { linecomment lexbuf }
 | "/*" { multilinecomment 0 lexbuf }
 | "." { FULLSTOP }
-| ucase idcharstar as c { CONSTANT c }
-| lcase idcharstarns as c { CONSTANT c }
 | "_" idchar + as c { CONSTANT c }
 | "_" { FRESHUV }
 | num as i { INTEGER (int_of_string i) }
@@ -160,4 +158,6 @@ and token = parse
 | "?-" { QDASH }
 | "pi" { PI }
 | "sigma" { SIGMA }
+| ucase idcharstar as c { CONSTANT c }
+| lcase idcharstarns as c { CONSTANT c }
 | eof { EOF }

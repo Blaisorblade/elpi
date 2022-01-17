@@ -80,6 +80,11 @@ let _ =
   test  "[f a,b]."          0 7  1 0 [] (mkSeq ["f" @ [c"a"];c"b";mkNil]);
   test  "[(a,b)]."          0 7  1 0 [] (mkSeq ["," @ [c"a";c"b"];mkNil]);
   test  "[a,b|c]."          0 7  1 0 [] (mkSeq [c"a";c"b";c"c"]);
+  test  "X is a."           0 6  1 0 [] ("is" @ [c"X";c"a"]);
+  testF "X is ."            6 ".*expects a right hand side";
+  testF "X + ."             5 ".*expects a right hand side";
+  testF "X * ."             5 ".*expects a right hand side";
+  test  "X is a, Y is b."   0 14 1 0 [] ("," @ ["is" @ [c"X";c"a"];"is" @ [c"Y";c"b"]]);
   (*    01234567890123456789012345 *)
   testF ":-"                2 "unexpected start";
   testF "+"                 1 "unexpected start";

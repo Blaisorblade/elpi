@@ -78,4 +78,7 @@ git/%:
 		ln -s $$PWD/elpi _build/install/default/bin/elpi.git.$*; \
 	  fi
 
+menhir:
+	menhir --interpret src/tokens.mly --base parser2 src/parser2.mly 2>/dev/null
+
 .PHONY: tests help install build clean
