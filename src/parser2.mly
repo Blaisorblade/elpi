@@ -73,20 +73,31 @@ goal:
 | g = term; FULLSTOP { ( loc $loc , g ) }
 
 clause:
-| body = term; {
+| attributes = clause_attributes; body = term; {
     { Clause.loc = loc $loc;
-      attributes = [];
+      attributes;
       body;
     }
   }
+clause_attributes:
+| { [] }
+| COLON; l = separated_nonempty_list(COLON, clause_attribute) { l }
 
+clause_attribute:
+| c = CLAUSE_ATTRIBUTE; s = STRING {
+    if c = "name" then Clause.Name s
+    else if c = "after" then Clause.After s
+    else if c = "before" then Clause.Before s
+    else if c = "if" then Clause.If s
+    else assert false
+  }
 
 term:
 | t = oterm { t }
 | t = cterm { t }
 
 cterm:
-| t = CONSTANT { mkCon t }
+| t = constant { mkCon t }
 | x = INTEGER { mkC (cint.Util.CData.cin x)}
 | x = FLOAT { mkC (cfloat.Util.CData.cin x)}
 | x = STRING { mkC (cstring.Util.CData.cin x)}
@@ -98,7 +109,7 @@ cterm:
 | hd = cterm; arg = cterm; { mkApp (loc $loc(hd)) [hd ; arg] } %prec CONSTANT
 
 oterm:
-| t = CONSTANT; BIND; b = term { mkLam t b }
+| t = constant; BIND; b = term { mkLam t b }
 | l = term; s = SYMB_PLUS;  r = term { App(mkCon s,[l;r]) }
 | l = term; s = SYMB_TIMES; r = term { App(mkCon s,[l;r]) }
 | l = term; s = SYMB_MINUS; r = term { App(mkCon s,[l;r]) }
@@ -124,3 +135,8 @@ oterm:
 | l = term; QDASH; r = term { App(mkCon "?-",[l;r]) }
 | s = SYMB_TILDE; r = term { App(mkCon s,[r]) }
 | l = term; s = SYMB_QMARK; { App(mkCon s,[l]) }
+
+constant:
+| c = CONSTANT { c }
+| c = CLAUSE_ATTRIBUTE { c }
+| c = PRED_ATTRIBUTE { c }

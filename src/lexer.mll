@@ -158,6 +158,8 @@ and token = parse
 | "?-" { QDASH }
 | "pi" { PI }
 | "sigma" { SIGMA }
+| ( "name" | "after" | "before" | "if" | "index" ) as s { CLAUSE_ATTRIBUTE s }
+| ( "index" ) as s { PRED_ATTRIBUTE s }
 | ucase idcharstar as c { CONSTANT c }
 | lcase idcharstarns as c { CONSTANT c }
 | eof { EOF }

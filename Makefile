@@ -80,5 +80,18 @@ git/%:
 
 menhir:
 	menhir --interpret src/tokens.mly --base parser2 src/parser2.mly 2>/dev/null
+.PHONY: complete
+complete:
+	menhir src/tokens.mly --base parser2 src/parser2.mly \
+		--list-errors > src/parser2Messages.auto.messages
+	menhir src/tokens.mly --base parser2 src/parser2.mly\
+		--merge-errors src/parser2Messages.auto.messages \
+		--merge-errors src/parser2Messages.messages \
+		> src/parser2Messages.merged
+	mv src/parser2Messages.merged src/parser2Messages.messages
+	rm src/parser2Messages.auto.messages
+
+strip:
+	sed -e "/^##/d" -i.bak src/parser2Messages.messages
 
 .PHONY: tests help install build clean

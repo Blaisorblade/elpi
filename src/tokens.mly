@@ -47,6 +47,8 @@
 %token FIXITY
 %token PI
 %token SIGMA
+%token < string > CLAUSE_ATTRIBUTE 
+%token < string > PRED_ATTRIBUTE 
 %token <string> SYMB_PLUS
 %token <string> SYMB_TIMES
 %token <string> SYMB_MINUS

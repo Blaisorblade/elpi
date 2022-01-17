@@ -23,17 +23,23 @@ let mkClause loc attributes body =
 let mkLoc x y w z =
   { Loc.source_name = ""; source_start = x; source_stop = y; line = w; line_starts_at = z}
   
-  
+
+let chunk s (p1,p2) =
+  String.sub s p1.Lexing.pos_cnum (p2.Lexing.pos_cnum - p1.Lexing.pos_cnum)
+
+let message_of_state s = try ParserMessages.message s with Not_found -> "syntax error"
 let test s x y w z att b =
   let exp = [mkClause (mkLoc x y w z) att b] in
   let lexbuf = Lexing.from_string s in
+  let buffer, lexer = MenhirLib.ErrorReports.wrap Lexer.token in
   try
-    let p = Parser.program Lexer.token lexbuf in
+    let p = Parser.program lexer lexbuf in
     if p <> exp then
       error s p exp
     with Parser.Error stateid ->
-      let message = ParserMessages.message stateid in
-      Printf.eprintf "error parsing '%s' at char %d\n%s%!" s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum message;
+      let message = message_of_state stateid in
+      let where = MenhirLib.ErrorReports.show (chunk s) buffer in
+      Printf.eprintf "%s\nerror parsing '%s' at char %d\n%s%!" where s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum message;
       exit 1
       
 let testF s i msg =
@@ -43,7 +49,7 @@ let testF s i msg =
     Printf.eprintf "error, '%s' should not parse\n%!" s;
     exit 1
   with Parser.Error stateid ->
-    let message = ParserMessages.message stateid in
+    let message = message_of_state stateid in
     if not @@ Str.string_match (Str.regexp_case_fold msg) message 0 then begin
       Printf.eprintf "error, '%s' fails with message '%s'\nwhich does not match '%s'\n%!" s message msg;   
       exit 1;
@@ -73,6 +79,7 @@ let _ =
   test  "p :- q + r , s."   0 14 1 0 [] (c"p" |- "," @ ["+" @ [c"q"; c"r" ]; c"s"]);
   test  "p :- q & r = s."   0 14 1 0 [] (c"p" |- "&" @ [c"q";"=" @ [c"r"; c"s"]]);
   test  "[]."               0 2  1 0 [] (mkNil);
+  test  "name."             0 4  1 0 [] (c "name");
   (*    01234567890123456789012345 *)
   test  "[a,b]."            0 5  1 0 [] (mkSeq [c"a";c"b";mkNil]);
   test  "[(a + b)]."        0 9  1 0 [] (mkSeq ["+" @ [c"a";c"b"];mkNil]);
@@ -90,3 +97,6 @@ let _ =
   testF "+"                 1 "unexpected start";
   testF "x. x)"             5 "unexpected ')'";
   testF "x. +"              4 "unexpected start";
+  test ":name \"x\" x."     0 11 1 0 [Clause.Name "x"] (c"x");
+  (*    01234567890123456789012345 *)
+  testF ":nam \"x\" x."     4 "attribute expected";

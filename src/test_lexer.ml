@@ -29,6 +29,7 @@ type t = Tokens.token =
   | RBRACKET
   | QUOTED of ( string )
   | QDASH
+  | PRED_ATTRIBUTE of string
   | PRED
   | PIPE
   | PI
@@ -62,6 +63,7 @@ type t = Tokens.token =
   | CONJ
   | COLON
   | CLOSED
+  | CLAUSE_ATTRIBUTE of string
   | BIND
   | AS
   | ARROW
