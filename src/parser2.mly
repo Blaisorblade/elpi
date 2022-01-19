@@ -28,6 +28,24 @@ let desugar_multi_binder loc = function
 
 let assert_fixity _ = assert false
 
+let rec mkList l stop acc =
+  match l with
+  | App(Const c,[x;y]) when c == Func.andf -> mkList y stop (x :: acc)
+  | t -> mkSeq (List.rev (stop :: t :: acc))
+
+let rec clean_app = function
+  | App(t,[]) -> t
+  | App(t,ts) -> App(clean_app t,List.map clean_app ts)
+  | Lam(s,t) -> Lam(s,clean_app t)
+  | x -> x
+
+let underscore () = mkCon "_"
+
+let decode_sequent t =
+  match t with
+  | App(Const c,[hyps;bo]) when c == Func.sequentf -> hyps, bo
+  | _ -> underscore (), t
+
 %}
 
 %on_error_reduce term
@@ -117,7 +135,14 @@ shorten:
 | { assert false }
 
 sequent:
-| t = cterm { { Chr.eigen = mkFreshUVar (); context = mkFreshUVar (); conclusion = t } }
+| t = closed_term {
+    let context, conclusion = decode_sequent t in
+    { Chr.eigen = underscore (); context; conclusion }
+  }
+| LPAREN; c = constant; COLON; t = term; RPAREN {
+    let context, conclusion = decode_sequent t in
+    { Chr.eigen = mkCon c; context; conclusion }
+  }
 
 goal:
 | g = term; EOF { ( loc $loc , g ) }
@@ -175,48 +200,54 @@ chr_rule_attribute_kwd:
 | x = ATTRIBUTE { x }
 
 term:
-| t = oterm { t }
-| t = cterm { t }
+| t = term_ { clean_app t }
 
-cterm:
+closed_term:
+| t = cterm_ { clean_app t }
+
+term_:
+| t = oterm_ { t }
+| t = cterm_ { t }
+
+cterm_:
 | t = constant { mkCon t }
 | x = INTEGER { mkC (cint.Util.CData.cin x)}
 | x = FLOAT { mkC (cfloat.Util.CData.cin x)}
 | x = STRING { mkC (cstring.Util.CData.cin x)}
-| LPAREN; t = term; RPAREN { t }
-| LCURLY; t = term; RCURLY { App (Const Func.spillf,[t]) }
-| LBRACKET; l = separated_list(CONJ,cterm); RBRACKET { mkSeq (l @ [mkNil]) }
-| LBRACKET; l = oterm; RBRACKET { mkSeq [l;mkNil] }
-| LBRACKET; l = separated_list(CONJ,cterm); PIPE; tl = term; RBRACKET { mkSeq (l @[tl]) }
-| hd = cterm; arg = cterm; { mkApp (loc $loc(hd)) [hd ; arg] } %prec CONSTANT
+| LPAREN; t = term_; RPAREN { App(t,[]) }
+| LCURLY; t = term_; RCURLY { App (Const Func.spillf,[t]) }
+| LBRACKET; RBRACKET { mkNil }
+| LBRACKET; l = term_; RBRACKET { mkList l mkNil [] }
+| LBRACKET; l = term_; PIPE; tl = term_; RBRACKET { mkList l tl [] }
 
-oterm:
-| t = constant; BIND; b = term { mkLam t b }
-| l = term; s = SYMB_PLUS;  r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_TIMES; r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_MINUS; r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_EXP;   r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_LT;    r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_GT;    r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_EQ;    r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_AT;    r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_AND;   r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_SHARP; r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_SLASH; r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_BTICK; r = term { App(mkCon s,[l;r]) }
-| l = term; s = SYMB_TICK;  r = term { App(mkCon s,[l;r]) }
-| l = term; CONJ;  r = term { App(mkCon ",",[l;r]) }
-| l = term; OR;    r = term { App(mkCon ";",[l;r]) }
-| l = term; AS;    r = term { App(mkCon "as",[l;r]) }
-| l = term; IS;    r = term { App(mkCon "is",[l;r]) }
-| l = term; MOD;   r = term { App(mkCon "mod",[l;r]) }
-| l = term; DIV;   r = term { App(mkCon "div",[l;r]) }
-| l = term; ARROW; r = term { App(mkCon "->",[l;r]) }
-| l = term; DARROW;r = term { App(mkCon "=>",[l;r]) }
-| l = term; VDASH; r = term { App(mkCon ":-",[l;r]) }
-| l = term; QDASH; r = term { App(mkCon "?-",[l;r]) }
-| s = SYMB_TILDE; r = term { App(mkCon s,[r]) }
-| l = term; s = SYMB_QMARK; { App(mkCon s,[l]) }
+oterm_:
+| hd = cterm_; arg = cterm_; { mkApp (loc $loc(hd)) [hd ; arg] } %prec OR
+| t = constant; BIND; b = term_ { mkLam t b }
+| l = term_; s = SYMB_PLUS;  r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_TIMES; r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_MINUS; r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_EXP;   r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_LT;    r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_GT;    r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_EQ;    r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_AT;    r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_AND;   r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_SHARP; r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_SLASH; r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_BTICK; r = term_ { App(mkCon s,[l;r]) }
+| l = term_; s = SYMB_TICK;  r = term_ { App(mkCon s,[l;r]) }
+| l = term_; CONJ;  r = term_ { App(mkCon ",",[l;r]) }
+| l = term_; OR;    r = term_ { App(mkCon ";",[l;r]) }
+| l = term_; AS;    r = term_ { App(mkCon "as",[l;r]) }
+| l = term_; IS;    r = term_ { App(mkCon "is",[l;r]) }
+| l = term_; MOD;   r = term_ { App(mkCon "mod",[l;r]) }
+| l = term_; DIV;   r = term_ { App(mkCon "div",[l;r]) }
+| l = term_; ARROW; r = term_ { App(mkCon "->",[l;r]) }
+| l = term_; DARROW;r = term_ { App(mkCon "=>",[l;r]) }
+| l = term_; VDASH; r = term_ { App(mkCon ":-",[l;r]) }
+| l = term_; QDASH; r = term_ { App(mkCon "?-",[l;r]) }
+| s = SYMB_TILDE; r = term_ { App(mkCon s,[r]) }
+| l = term_; s = SYMB_QMARK; { App(mkCon s,[l]) }
 
 constant:
 | c = CONSTANT { c }

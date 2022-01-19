@@ -158,7 +158,6 @@ and token = parse
 | '=' symbcharstar as s { SYMB_EQ s }
 | '#' symbcharstar as s { SYMB_SHARP s }
 | '&' symbcharstar as s { SYMB_AND s }
-| '?' symbcharstar as s { SYMB_QMARK s }
 | '@' symbcharstar as s { SYMB_AT s }
 | '\'' symbcharstar as s { SYMB_TICK s }
 | '`' symbcharstar as s { SYMB_BTICK s }
@@ -168,6 +167,7 @@ and token = parse
 | "!" { CUT }
 | ":-" { VDASH }
 | "?-" { QDASH }
+| '?' symbcharstar as s { SYMB_QMARK s }
 | "pi" { PI }
 | "sigma" { SIGMA }
 | ( "after" | "before" ) as s { CLAUSE_ATTRIBUTE s }
