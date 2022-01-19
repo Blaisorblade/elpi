@@ -144,6 +144,7 @@ and token = parse
 | "is" { IS }
 | "->" { ARROW }
 | "=>" { DARROW }
+| "<=>" { IFF }
 | "div" { DIV }
 | "mod" { MOD }
 | ("infix" | "infixl" | "infixr" | "prefix" | "prefixr" | "postfix" | "postfixl" ) { FIXITY }
@@ -169,8 +170,9 @@ and token = parse
 | "?-" { QDASH }
 | "pi" { PI }
 | "sigma" { SIGMA }
-| ( "name" | "after" | "before" | "if" | "index" ) as s { CLAUSE_ATTRIBUTE s }
-| ( "index" ) as s { PRED_ATTRIBUTE s }
+| ( "after" | "before" ) as s { CLAUSE_ATTRIBUTE s }
+| ( "name" | "if" ) as s { ATTRIBUTE s }
+| ( "index" ) { PRED_ATTRIBUTE }
 | ucase idcharstar as c { CONSTANT c }
 | lcase idcharstarns as c { CONSTANT c }
 | eof { EOF }

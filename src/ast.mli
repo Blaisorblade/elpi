@@ -171,7 +171,9 @@ module Program : sig
     | Chr of Chr.attribute list Chr.t
     | Macro of (Func.t, Term.t) Macro.t
     | Type of Type.attribute list Type.t
+    | Pred of Type.attribute list Type.t * Func.t Mode.t
     | TypeAbbreviation of Func.t TypeAbbreviation.t
+    | Ignored of Loc.t
   [@@ deriving show]
 
   val mkLocal : string -> decl

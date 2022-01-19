@@ -26,6 +26,8 @@ let desugar_multi_binder loc = function
   | (App _ | Const _ | Lam _ | CData _ | Quoted _) as t -> t
 ;;
 
+let assert_fixity _ = assert false
+
 %}
 
 %on_error_reduce term
@@ -50,7 +52,7 @@ let desugar_multi_binder loc = function
 %nonassoc SYMB_TICK 
 %left SYMB_AND    (* 128 *) 
 %nonassoc SYMB_EQ (* 130 *) SYMB_LT SYMB_GT IS   
-%left SYMB_AT (* 135 *)   
+%left SYMB_AT (* 135 *) IFF  
 %nonassoc SYMB_BTICK (* 141 *)
 %left SYMB_EXP (* 150 *) SYMB_PLUS SYMB_MINUS
 %left SYMB_TIMES (* 160 *) SYMB_SLASH DIV MOD
@@ -67,6 +69,55 @@ program:
 
 decl:
 | c = clause; FULLSTOP { Program.Clause c }
+| r = chr_rule; FULLSTOP { Program.Chr r }
+| p = pred; FULLSTOP { Program.Pred (fst p, snd p) }
+| t = type_; FULLSTOP { Program.Type t }
+| m = mode; FULLSTOP { Program.Mode m }
+| m = macro; FULLSTOP { Program.Macro m }
+| CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, List.map Func.from_string cl) }
+| NAMESPACE; c = constant { Program.Namespace(loc $loc, Func.from_string c )}
+(*| s = shorten; FULLSTOP { Program.Shorten s }*)
+| a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
+| LCURLY { Program.Begin (loc $loc) }
+| RCURLY { Program.End (loc $loc) }
+| ignored; FULLSTOP { Program.Ignored (loc $loc) }
+| f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $loc)}
+
+chr_rule:
+| attributes = chr_rule_attributes; RULE;
+  to_match = list(sequent);
+  to_remove = preceded(BIND,nonempty_list(sequent))?;
+  guard = preceded(PIPE,term)?;
+  new_goal = preceded(IFF,sequent)? {
+    Chr.create ~to_match ?to_remove ?guard ?new_goal ~attributes ~loc:(loc $loc) ()
+  }
+
+pred:
+| { assert false }
+
+type_:
+| { assert false }
+
+mode:
+| { assert false }
+
+macro:
+| { assert false }
+
+typeabbrev:
+| { assert false }
+
+ignored:
+| { assert false }
+
+fixity:
+| { assert false }
+
+shorten:
+| { assert false }
+
+sequent:
+| t = cterm { { Chr.eigen = mkFreshUVar (); context = mkFreshUVar (); conclusion = t } }
 
 goal:
 | g = term; EOF { ( loc $loc , g ) }
@@ -84,13 +135,44 @@ clause_attributes:
 | COLON; l = separated_nonempty_list(COLON, clause_attribute) { l }
 
 clause_attribute:
-| c = CLAUSE_ATTRIBUTE; s = STRING {
+| c = clause_attribute_kwd; s = STRING {
     if c = "name" then Clause.Name s
     else if c = "after" then Clause.After s
     else if c = "before" then Clause.Before s
     else if c = "if" then Clause.If s
     else assert false
   }
+
+chr_rule_attributes:
+| { [] }
+| COLON; l = separated_nonempty_list(COLON, chr_rule_attribute) { l }
+
+chr_rule_attribute:
+| c = chr_rule_attribute_kwd; s = STRING {
+    if c = "name" then Chr.Name s
+    else if c = "if" then Chr.If s
+    else assert false
+  }
+
+pred_attributes:
+| { [] }
+| COLON; l = separated_nonempty_list(COLON, pred_attribute) { l }
+
+pred_attribute:
+| PRED_ATTRIBUTE; LPAREN; l = nonempty_list(indexing) ; RPAREN {
+    Type.Index s
+  }
+
+indexing:
+| FRESHUV { 0 }
+| i = INTEGER { i }
+
+clause_attribute_kwd:
+| x = ATTRIBUTE { x }
+| x = CLAUSE_ATTRIBUTE { x }
+
+chr_rule_attribute_kwd:
+| x = ATTRIBUTE { x }
 
 term:
 | t = oterm { t }
@@ -139,4 +221,5 @@ oterm:
 constant:
 | c = CONSTANT { c }
 | c = CLAUSE_ATTRIBUTE { c }
-| c = PRED_ATTRIBUTE { c }
+| c = ATTRIBUTE { c }
+| PRED_ATTRIBUTE { "index" }

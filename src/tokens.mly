@@ -48,7 +48,8 @@
 %token PI
 %token SIGMA
 %token < string > CLAUSE_ATTRIBUTE 
-%token < string > PRED_ATTRIBUTE 
+%token PRED_ATTRIBUTE 
+%token < string > ATTRIBUTE 
 %token <string> SYMB_PLUS
 %token <string> SYMB_TIMES
 %token <string> SYMB_MINUS
@@ -65,6 +66,7 @@
 %token <string> SYMB_AND
 %token CONJ
 %token OR
+%token IFF
 %token <string> SYMB_SLASH
 %token EOF
 

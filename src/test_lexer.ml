@@ -29,7 +29,7 @@ type t = Tokens.token =
   | RBRACKET
   | QUOTED of ( string )
   | QDASH
-  | PRED_ATTRIBUTE of string
+  | PRED_ATTRIBUTE
   | PRED
   | PIPE
   | PI
@@ -48,6 +48,7 @@ type t = Tokens.token =
   | IS
   | INTEGER of ( int )
   | IMPORT
+  | IFF
   | FULLSTOP
   | FRESHUV
   | FLOAT of ( float )
@@ -65,6 +66,7 @@ type t = Tokens.token =
   | CLOSED
   | CLAUSE_ATTRIBUTE of string
   | BIND
+  | ATTRIBUTE of string
   | AS
   | ARROW
   | ACCUM_SIG
@@ -165,5 +167,5 @@ b"|}                                  [T(STRING "a\nb", 2, 3, 5)];
 b
 c
 #line 7 "xx"
-a|}                      [T(CONSTANT "b", 2, 1, 2);T(CONSTANT "c", 3, 3, 4);T(CONSTANT "a", 7, 5, 1) ];
+a|}                                   [T(CONSTANT "b", 2, 1, 2);T(CONSTANT "c", 3, 3, 4);T(CONSTANT "a", 7, 5, 1) ];
   
