@@ -1,3 +1,207 @@
+goal: SYMB_TILDE VDASH
+##
+## Ends in an error in state: 1.
+##
+## oterm_ -> SYMB_TILDE . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## SYMB_TILDE
+##
+
+This prefix operator expects an argument.
+
+goal: CONSTANT SYMB_PLUS VDASH
+##
+## Ends in an error in state: 32.
+##
+## oterm_ -> term_ SYMB_PLUS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_PLUS
+##
+goal: CONSTANT SYMB_TIMES VDASH
+##
+## Ends in an error in state: 16.
+##
+## oterm_ -> term_ SYMB_TIMES . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_TIMES
+##
+goal: CONSTANT SYMB_MINUS VDASH
+##
+## Ends in an error in state: 38.
+##
+## oterm_ -> term_ SYMB_MINUS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_MINUS
+##
+goal: CONSTANT SYMB_LT VDASH
+##
+## Ends in an error in state: 40.
+##
+## oterm_ -> term_ SYMB_LT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_LT
+##
+goal: CONSTANT SYMB_EXP VDASH
+##
+## Ends in an error in state: 42.
+##
+## oterm_ -> term_ SYMB_EXP . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_EXP
+##
+goal: CONSTANT SYMB_BTICK VDASH
+##
+## Ends in an error in state: 44.
+##
+## oterm_ -> term_ SYMB_BTICK . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_BTICK
+##
+goal: CONSTANT SYMB_AT VDASH
+##
+## Ends in an error in state: 46.
+##
+## oterm_ -> term_ SYMB_AT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_AT
+##
+goal: CONSTANT SYMB_GT VDASH
+##
+## Ends in an error in state: 48.
+##
+## oterm_ -> term_ SYMB_GT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_GT
+##
+goal: CONSTANT SYMB_EQ VDASH
+##
+## Ends in an error in state: 50.
+##
+## oterm_ -> term_ SYMB_EQ . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_EQ
+##
+goal: CONSTANT SYMB_AND VDASH
+##
+## Ends in an error in state: 52.
+##
+## oterm_ -> term_ SYMB_AND . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_AND
+##
+goal: CONSTANT SYMB_SHARP VDASH
+##
+## Ends in an error in state: 18.
+##
+## oterm_ -> term_ SYMB_SHARP . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_SHARP
+##
+goal: CONSTANT SYMB_TICK VDASH
+##
+## Ends in an error in state: 28.
+##
+## oterm_ -> term_ SYMB_TICK . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_TICK
+##
+goal: CONSTANT SYMB_SLASH VDASH
+##
+## Ends in an error in state: 30.
+##
+## oterm_ -> term_ SYMB_SLASH . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ SYMB_SLASH
+##
+
+This infix operator expects a right hand side.
+
+goal: CONSTANT IS VDASH
+##
+## Ends in an error in state: 54.
+##
+## oterm_ -> term_ IS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
+##
+## The known suffix of the stack is as follows:
+## term_ IS
+##
+
+Operator 'is' expects a right hand side.
+
+program: VDASH
+##
+## Ends in an error in state: 82.
+##
+## program' -> . program [ # ]
+##
+## The known suffix of the stack is as follows:
+##
+##
+
+Unexpected start of program clause or declaration.
+
+program: CONSTANT RPAREN
+##
+## Ends in an error in state: 129.
+##
+## decl -> clause . FULLSTOP [ SYMB_TILDE STRING RULE RCURLY PRED_ATTRIBUTE NAMESPACE LPAREN LCURLY LBRACKET INTEGER FULLSTOP FLOAT EOF CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ]
+##
+## The known suffix of the stack is as follows:
+## clause
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 25, spurious reduction of production cterm_ -> constant
+## In state 22, spurious reduction of production term_ -> cterm_
+## In state 77, spurious reduction of production term -> term_
+## In state 128, spurious reduction of production clause -> clause_attributes term
+##
+
+Unexpected ')'.
+
+program: CONSTANT FULLSTOP VDASH
+##
+## Ends in an error in state: 125.
+##
+## program -> decl . program [ # ]
+##
+## The known suffix of the stack is as follows:
+## decl
+##
+
+Unexpected start of program clause or declaration.
+
+
+
+
+program: COLON VDASH
+##
+## Ends in an error in state: 93.
+##
+## chr_rule_attributes -> COLON . separated_nonempty_list(COLON,chr_rule_attribute) [ RULE ]
+## clause_attributes -> COLON . separated_nonempty_list(COLON,clause_attribute) [ SYMB_TILDE STRING PRED_ATTRIBUTE LPAREN LCURLY LBRACKET INTEGER FLOAT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
+##
+## The known suffix of the stack is as follows:
+## COLON
+##
+
+Attribute expected.
 
 goal: VDASH
 ##
@@ -7,18 +211,6 @@ goal: VDASH
 ##
 ## The known suffix of the stack is as follows:
 ##
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: SYMB_TILDE VDASH
-##
-## Ends in an error in state: 1.
-##
-## oterm_ -> SYMB_TILDE . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## SYMB_TILDE
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -160,18 +352,6 @@ goal: ATTRIBUTE VDASH ATTRIBUTE VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_TIMES VDASH
-##
-## Ends in an error in state: 16.
-##
-## oterm_ -> term_ SYMB_TIMES . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_TIMES
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_TIMES ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 17.
@@ -204,18 +384,6 @@ goal: ATTRIBUTE SYMB_TIMES ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_TIMES term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE SYMB_SHARP VDASH
-##
-## Ends in an error in state: 18.
-##
-## oterm_ -> term_ SYMB_SHARP . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_SHARP
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -330,18 +498,6 @@ goal: ATTRIBUTE BIND ATTRIBUTE ATTRIBUTE USEONLY
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_TICK VDASH
-##
-## Ends in an error in state: 28.
-##
-## oterm_ -> term_ SYMB_TICK . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_TICK
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_TICK ATTRIBUTE SYMB_TICK
 ##
 ## Ends in an error in state: 29.
@@ -385,18 +541,6 @@ goal: ATTRIBUTE SYMB_TICK ATTRIBUTE SYMB_TICK
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_SLASH VDASH
-##
-## Ends in an error in state: 30.
-##
-## oterm_ -> term_ SYMB_SLASH . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_SLASH
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_SLASH ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 31.
@@ -429,18 +573,6 @@ goal: ATTRIBUTE SYMB_SLASH ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_SLASH term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE SYMB_PLUS VDASH
-##
-## Ends in an error in state: 32.
-##
-## oterm_ -> term_ SYMB_PLUS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_PLUS
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -577,18 +709,6 @@ goal: ATTRIBUTE DIV ATTRIBUTE ATTRIBUTE USEONLY
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_MINUS VDASH
-##
-## Ends in an error in state: 38.
-##
-## oterm_ -> term_ SYMB_MINUS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_MINUS
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_MINUS ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 39.
@@ -621,18 +741,6 @@ goal: ATTRIBUTE SYMB_MINUS ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_MINUS term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE SYMB_LT VDASH
-##
-## Ends in an error in state: 40.
-##
-## oterm_ -> term_ SYMB_LT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_LT
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -680,18 +788,6 @@ goal: ATTRIBUTE SYMB_LT ATTRIBUTE SYMB_LT
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_EXP VDASH
-##
-## Ends in an error in state: 42.
-##
-## oterm_ -> term_ SYMB_EXP . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_EXP
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_EXP ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 43.
@@ -724,18 +820,6 @@ goal: ATTRIBUTE SYMB_EXP ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_EXP term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE SYMB_BTICK VDASH
-##
-## Ends in an error in state: 44.
-##
-## oterm_ -> term_ SYMB_BTICK . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_BTICK
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -783,18 +867,6 @@ goal: ATTRIBUTE SYMB_BTICK ATTRIBUTE SYMB_BTICK
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_AT VDASH
-##
-## Ends in an error in state: 46.
-##
-## oterm_ -> term_ SYMB_AT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_AT
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_AT ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 47.
@@ -827,18 +899,6 @@ goal: ATTRIBUTE SYMB_AT ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_AT term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE SYMB_GT VDASH
-##
-## Ends in an error in state: 48.
-##
-## oterm_ -> term_ SYMB_GT . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_GT
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -886,18 +946,6 @@ goal: ATTRIBUTE SYMB_GT ATTRIBUTE SYMB_LT
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_EQ VDASH
-##
-## Ends in an error in state: 50.
-##
-## oterm_ -> term_ SYMB_EQ . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_EQ
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_EQ ATTRIBUTE SYMB_LT
 ##
 ## Ends in an error in state: 51.
@@ -941,18 +989,6 @@ goal: ATTRIBUTE SYMB_EQ ATTRIBUTE SYMB_LT
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-goal: ATTRIBUTE SYMB_AND VDASH
-##
-## Ends in an error in state: 52.
-##
-## oterm_ -> term_ SYMB_AND . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ SYMB_AND
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 goal: ATTRIBUTE SYMB_AND ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## Ends in an error in state: 53.
@@ -985,18 +1021,6 @@ goal: ATTRIBUTE SYMB_AND ATTRIBUTE ATTRIBUTE USEONLY
 ##
 ## The known suffix of the stack is as follows:
 ## term_ SYMB_AND term_
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-goal: ATTRIBUTE IS VDASH
-##
-## Ends in an error in state: 54.
-##
-## oterm_ -> term_ IS . term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN RCURLY RBRACKET QDASH PIPE OR MOD IS IFF FULLSTOP EOF DIV DARROW CONJ AS ARROW ]
-##
-## The known suffix of the stack is as follows:
-## term_ IS
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -1537,18 +1561,6 @@ goal: ATTRIBUTE RCURLY
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: VDASH
-##
-## Ends in an error in state: 82.
-##
-## program' -> . program [ # ]
-##
-## The known suffix of the stack is as follows:
-##
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 program: NAMESPACE VDASH
 ##
 ## Ends in an error in state: 84.
@@ -1581,19 +1593,6 @@ program: CONSTRAINT ATTRIBUTE VDASH
 ##
 ## The known suffix of the stack is as follows:
 ## constant
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: COLON VDASH
-##
-## Ends in an error in state: 93.
-##
-## chr_rule_attributes -> COLON . separated_nonempty_list(COLON,chr_rule_attribute) [ RULE ]
-## clause_attributes -> COLON . separated_nonempty_list(COLON,clause_attribute) [ SYMB_TILDE STRING PRED_ATTRIBUTE LPAREN LCURLY LBRACKET INTEGER FLOAT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-##
-## The known suffix of the stack is as follows:
-## COLON
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
@@ -1631,39 +1630,6 @@ program: COLON ATTRIBUTE STRING COLON VDASH
 ##
 ## The known suffix of the stack is as follows:
 ## clause_attribute COLON
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: FULLSTOP VDASH
-##
-## Ends in an error in state: 125.
-##
-## program -> decl . program [ # ]
-##
-## The known suffix of the stack is as follows:
-## decl
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: ATTRIBUTE RCURLY
-##
-## Ends in an error in state: 129.
-##
-## decl -> clause . FULLSTOP [ SYMB_TILDE STRING RULE RCURLY PRED_ATTRIBUTE NAMESPACE LPAREN LCURLY LBRACKET INTEGER FULLSTOP FLOAT EOF CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ]
-##
-## The known suffix of the stack is as follows:
-## clause
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production cterm_ -> constant
-## In state 22, spurious reduction of production term_ -> cterm_
-## In state 77, spurious reduction of production term -> term_
-## In state 128, spurious reduction of production clause -> clause_attributes term
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
