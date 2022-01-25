@@ -34,9 +34,15 @@ let rec mkList l stop acc =
   | t -> mkSeq (List.rev (stop :: t :: acc))
 
 let rec clean_app = function
-  | App(t,[]) -> t
-  | App(t,ts) -> App(clean_app t,List.map clean_app ts)
-  | Lam(s,t) -> Lam(s,clean_app t)
+  | App(t,[]) -> clean_app t
+  | App(t,ts) as x ->
+      let ts' = Util.smart_map clean_app ts in
+      let t' = clean_app t in
+      if t == t' && ts == ts' then x
+      else App(t',ts')
+  | Lam(s,t) as x ->
+      let t' = clean_app t in
+      if t == t' then x else Lam(s,t')
   | x -> x
 
 let underscore () = mkCon "_"
@@ -126,13 +132,24 @@ typeabbrev:
 | { assert false }
 
 ignored:
-| { assert false }
+| MODULE; constant { Program.Ignored (loc $loc) }
+| SIG; constant { Program.Ignored (loc $loc) }
 
 fixity:
 | { assert false }
 
 shorten:
-| { assert false }
+| SHORTEN; l = trie { Program.Shorten(loc $loc,l) }
+
+trie:
+| c = constant; FULLSTOP; LCURLY; l = nonempty_separated_list(COMMA,subtrie); RCURLY {
+    List.map (fun (p,x) -> prefix ^ "." ^ p, x) (List.flatten l)
+}
+subtrie:
+| name = constant { [name,name] }
+| prefix = constant; FULLSTOP; LCURLY; l = nonempty_separated_list(COMMA,subtrie); RCURLY {
+    List.map (fun (p,x) -> prefix ^ "." ^ p, x) (List.flatten l)
+}
 
 sequent:
 | t = closed_term {
@@ -155,6 +172,7 @@ clause:
       body;
     }
   }
+
 clause_attributes:
 | { [] }
 | COLON; l = separated_nonempty_list(COLON, clause_attribute) { l }

@@ -209,7 +209,7 @@ module Program = struct
     | Begin of Loc.t
     | Namespace of Loc.t * Func.t
     | Constraint of Loc.t * Func.t list
-    | Shorten of Loc.t * Func.t * Func.t (* prefix suffix *)
+    | Shorten of Loc.t * (Func.t * Func.t) list (* prefix suffix *)
     | End of Loc.t
 
     | Accumulated of Loc.t * (Digest.t * decl list)
