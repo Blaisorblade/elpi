@@ -100,7 +100,7 @@ decl:
 | m = macro; FULLSTOP { Program.Macro m }
 | CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, List.map Func.from_string cl) }
 | NAMESPACE; c = constant { Program.Namespace(loc $loc, Func.from_string c )}
-(*| s = shorten; FULLSTOP { Program.Shorten s }*)
+| s = shorten; FULLSTOP { Program.Shorten(loc $loc, s) }
 | a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
 | LCURLY { Program.Begin (loc $loc) }
 | RCURLY { Program.End (loc $loc) }
@@ -139,15 +139,17 @@ fixity:
 | { assert false }
 
 shorten:
-| SHORTEN; l = trie { Program.Shorten(loc $loc,l) }
+| SHORTEN; l = trie {
+     List.map Func.(fun (x,y) -> from_string x, from_string y) l
+  }
 
 trie:
-| c = constant; FULLSTOP; LCURLY; l = nonempty_separated_list(COMMA,subtrie); RCURLY {
-    List.map (fun (p,x) -> prefix ^ "." ^ p, x) (List.flatten l)
+| c = constant; FULLSTOP; LCURLY; l = separated_nonempty_list(CONJ,subtrie); RCURLY {
+    List.map (fun (p,x) -> c ^ "." ^ p, x) (List.flatten l)
 }
 subtrie:
 | name = constant { [name,name] }
-| prefix = constant; FULLSTOP; LCURLY; l = nonempty_separated_list(COMMA,subtrie); RCURLY {
+| prefix = constant; FULLSTOP; LCURLY; l = separated_nonempty_list(CONJ,subtrie); RCURLY {
     List.map (fun (p,x) -> prefix ^ "." ^ p, x) (List.flatten l)
 }
 

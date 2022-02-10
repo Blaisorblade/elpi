@@ -605,6 +605,8 @@ end = struct (* {{{ *)
 
   let run _ dl =
     let rec aux ns blocks clauses macros types tabbrs modes locals chr accs = function
+      | Program.Ignored _ :: rest ->
+          aux ns blocks clauses macros types tabbrs modes locals chr accs rest
       | (Program.End _ :: _ | []) as rest ->
           { body = List.rev (cl2b clauses @ blocks);
             types = List.rev types;
@@ -636,7 +638,9 @@ end = struct (* {{{ *)
             error "locals cannot be declared inside a namespace block";
           aux_end_block loc ns (Namespace (n,p) :: cl2b clauses @ blocks)
             [] macros types tabbrs modes locals chr accs rest
-      | Program.Shorten (loc,full_name,short_name) :: rest ->
+      | Program.Shorten (loc,[]) :: rest ->
+        aux ns [] [] [] [] [] [] [] [] accs rest
+      | Program.Shorten (loc,(full_name,short_name)::moreshorten) :: rest ->
           let shorthand = { iloc = loc; full_name; short_name } in  
           let p, locals1, chr1, rest = aux ns [] [] [] [] [] [] [] [] accs rest in
           if locals1 <> [] then
@@ -660,6 +664,11 @@ end = struct (* {{{ *)
           aux ns blocks (c::clauses) macros types tabbrs modes locals chr accs rest
       | Program.Macro m :: rest ->
           aux ns blocks clauses (m::macros) types tabbrs modes locals chr accs rest
+      | Program.Pred (t,m) :: rest ->
+          aux ns blocks clauses macros types tabbrs modes locals chr accs
+            (Program.Mode [m] :: Program.Type t :: rest)
+      | Program.Mode ms :: rest ->
+            aux ns blocks clauses macros types tabbrs (ms @ modes) locals chr accs rest
       | Program.Type t :: rest ->
           let t = structure_type_attributes t in
           let types =
@@ -667,8 +676,6 @@ end = struct (* {{{ *)
           aux ns blocks clauses macros types tabbrs modes locals chr accs rest
       | Program.TypeAbbreviation abbr :: rest ->
           aux ns blocks clauses macros types (abbr :: tabbrs) modes locals chr accs rest
-      | Program.Mode ms :: rest ->
-          aux ns blocks clauses macros types tabbrs (ms @ modes) locals chr accs rest
       | Program.Local l :: rest ->
           aux ns blocks clauses macros types tabbrs modes (l::locals) chr accs rest
       | Program.Chr r :: rest ->

@@ -691,7 +691,7 @@ EXTEND
          accumulate loc ".sig" filenames
      | SHORTEN; names = string_trie; FULLSTOP ->
         List.map (fun (prefix, name) ->
-          Program.Shorten(of_ploc loc, Func.from_string prefix, Func.from_string name))
+          Program.Shorten(of_ploc loc, [Func.from_string prefix, Func.from_string name]))
           names
      | LOCAL; vars = LIST1 const_sym SEP SYMBOL ","; FULLSTOP ->
         List.map (fun x -> Program.mkLocal x) vars
