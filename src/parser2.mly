@@ -96,12 +96,13 @@ decl:
 | r = chr_rule; FULLSTOP { Program.Chr r }
 | p = pred; FULLSTOP { Program.Pred (fst p, snd p) }
 | t = type_; FULLSTOP { Program.Type t }
-| m = mode; FULLSTOP { Program.Mode m }
-| m = macro; FULLSTOP { Program.Macro m }
+| KIND; t = kind; FULLSTOP { Program.Type t }
+| MODE; m = mode; FULLSTOP { Program.Mode m }
+| MACRO; m = macro; FULLSTOP { Program.Macro m }
 | CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, List.map Func.from_string cl) }
 | NAMESPACE; c = constant { Program.Namespace(loc $loc, Func.from_string c )}
-| s = shorten; FULLSTOP { Program.Shorten(loc $loc, s) }
-| a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
+| SHORTEN; s = shorten; FULLSTOP { Program.Shorten(loc $loc, s) }
+| TYPEABBREV; a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
 | LCURLY { Program.Begin (loc $loc) }
 | RCURLY { Program.End (loc $loc) }
 | ignored; FULLSTOP { Program.Ignored (loc $loc) }
@@ -119,8 +120,36 @@ chr_rule:
 pred:
 | { assert false }
 
+kind:
+| KIND; names = separated_nonempty_list(CONJ,constant); k = kind_term {
+    names |> List.map (fun n->
+     { Type.loc=loc $loc; attributes=[]; name=Func.from_string n; ty=k })
+  }
 type_:
-| { assert false }
+| attributes = type_attributes;
+  TYPE; names = separated_nonempty_list(CONJ,constant); t = type_term {
+    names |> List.map (fun n->
+     { Type.loc=loc $loc; attributes; name=Func.from_string n; ty=t })
+  }
+
+ctype_term:
+| c = constant { let c = if c = "o" then "prop" else c in
+    mkCon c
+  }
+| hd = type_term; c = constant { let c = if c = "o" then "prop" else c in
+    mkApp (loc $loc(hd)) [hd;mkCon c]
+  }
+| LPAREN; t = ctype_term; RPAREN { t }
+type_term:
+| t = ctype_term { t }
+| hd = ctype_term; ARROW; t = ctype_term { mkApp (loc $loc(hd)) [mkCon "->"; hd; t] }
+
+kind_term:
+| TYPE { mkCon "type" }
+| hd = TYPE; ARROW; t = kind_term { mkApp (loc $loc(hd)) [mkCon "->"; mkCon "type"; t] }
+
+type_attributes:
+| a = pred_attributes { a }
 
 mode:
 | { assert false }
@@ -129,7 +158,20 @@ macro:
 | { assert false }
 
 typeabbrev:
-| { assert false }
+| a = abbrevform; t = type_term {
+    let name, args = a in
+    let nparams = List.length args in
+    let value = List.fold_right mkLam args t in
+    { TypeAbbreviation.name = name;
+      nparams = nparams;
+      value = value;
+      loc = loc $loc }
+  }
+
+abbrevform:
+| c = constant { Func.from_string c, [] }
+| LPAREN; hd = constant; args = nonempty_list(constant); RPAREN { Func.from_string hd, args  }
+
 
 ignored:
 | MODULE; constant { Program.Ignored (loc $loc) }
@@ -139,7 +181,7 @@ fixity:
 | { assert false }
 
 shorten:
-| SHORTEN; l = trie {
+| l = trie {
      List.map Func.(fun (x,y) -> from_string x, from_string y) l
   }
 
@@ -201,11 +243,12 @@ chr_rule_attribute:
 
 pred_attributes:
 | { [] }
+| EXTERNAL { [Type.External] }
 | COLON; l = separated_nonempty_list(COLON, pred_attribute) { l }
 
 pred_attribute:
 | PRED_ATTRIBUTE; LPAREN; l = nonempty_list(indexing) ; RPAREN {
-    Type.Index s
+    Type.Index l
   }
 
 indexing:

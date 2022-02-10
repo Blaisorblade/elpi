@@ -636,19 +636,26 @@ EXTEND
        [Program.Chr { r with Chr.attributes = [] } ]
      | COLON; attributes = type_attributes; PRED; p = pred; FULLSTOP ->
          let m, (n,t) = p in
-         [Program.Type { Type.loc=of_ploc loc; attributes; name = n ; ty = t }; Program.Mode m]
+         [Program.Type [{ Type.loc=of_ploc loc; attributes; name = n ; ty = t }]; Program.Mode m]
      | PRED; p = pred; FULLSTOP ->
          let m, (n,t) = p in
-         [Program.Type { Type.loc=of_ploc loc; attributes = []; name = n ; ty = t }; Program.Mode m]
+         [Program.Type [{ Type.loc=of_ploc loc; attributes = []; name = n ; ty = t }]; Program.Mode m]
      | COLON; attributes = type_attributes; TYPE;
        names = LIST1 const_sym SEP SYMBOL ","; t = type_; FULLSTOP ->
-         List.map (fun n ->
-           Program.Type { Type.loc=of_ploc loc; attributes; name=Func.from_string n; ty=t })
-           names
+        [Program.Type 
+          (List.map (fun n ->
+           { Type.loc=of_ploc loc; attributes; name=Func.from_string n; ty=t })
+           names)]
      | TYPE; names = LIST1 const_sym SEP SYMBOL ","; t = type_; FULLSTOP ->
-         List.map (fun n ->
-           Program.Type { Type.loc=of_ploc loc; attributes = []; name=Func.from_string n; ty=t })
-           names
+        [Program.Type
+          (List.map (fun n ->
+           { Type.loc=of_ploc loc; attributes = []; name=Func.from_string n; ty=t })
+           names)]
+     | KIND; names = LIST1 const_sym SEP SYMBOL ","; t = kind; FULLSTOP ->
+        [Program.Type 
+          (List.map (fun n ->
+           { Type.loc=of_ploc loc; attributes=[]; name=Func.from_string n; ty=t })
+           names)]
      | COLON; attributes = clause_attributes; f = atom; FULLSTOP ->
        let c = { Clause.loc = of_ploc loc; attributes; body = f } in
        [Program.Clause c]
@@ -657,18 +664,19 @@ EXTEND
        [Program.Clause c]
      | EXTERNAL;
        TYPE; names = LIST1 const_sym SEP SYMBOL ","; t = type_; FULLSTOP ->
-         List.map (fun n ->
-           Program.Type { Type.loc = of_ploc loc;
+        [Program.Type 
+          (List.map (fun n ->
+           { Type.loc = of_ploc loc;
                   attributes=[Type.External];
                   name=Func.from_string n;
                   ty=t })
-         names
+         names)]
      | EXTERNAL; PRED; p = pred; FULLSTOP ->
          let _, (n,t) = p in (* No mode for ML code *)
-         [Program.Type { Type.loc = of_ploc loc;
+         [Program.Type [{ Type.loc = of_ploc loc;
                  attributes = [Type.External];
                  name = n;
-                 ty = t }]
+                 ty = t }]]
      | LCURLY -> [Program.Begin (of_ploc loc)]
      | RCURLY -> [Program.End (of_ploc loc)]
      | MODE; m = LIST1 mode SEP SYMBOL ","; FULLSTOP -> [Program.Mode m]
@@ -705,10 +713,6 @@ EXTEND
      | USEONLY; LIST1 const_sym SEP SYMBOL ","; type_; FULLSTOP -> []
      | EXPORTDEF; LIST1 const_sym SEP SYMBOL ","; FULLSTOP -> []
      | EXPORTDEF; LIST1 const_sym SEP SYMBOL ","; type_; FULLSTOP -> []
-     | KIND; names = LIST1 const_sym SEP SYMBOL ","; t = kind; FULLSTOP ->
-         List.map (fun n ->
-           Program.Type { Type.loc=of_ploc loc; attributes=[]; name=Func.from_string n; ty=t })
-         names
      | TYPEABBREV; a = abbrform; t = type_; FULLSTOP -> [
          let name, args = a in
          let nparams = List.length args in
