@@ -119,6 +119,7 @@ and token = parse
 | "}" { RCURLY }
 | "|" { PIPE }
 | "{{" { skip lexbuf 2; quoted 2 lexbuf }
+| ("i" | "o") as s { IO s }
 | "shorten" { SHORTEN }
 | "accumulate" { ACCUMULATE }
 | "local" { LOCAL }

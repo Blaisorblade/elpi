@@ -94,7 +94,7 @@ program:
 decl:
 | c = clause; FULLSTOP { Program.Clause c }
 | r = chr_rule; FULLSTOP { Program.Chr r }
-| p = pred; FULLSTOP { Program.Pred (fst p, snd p) }
+| p = pred; FULLSTOP { Program.Pred (snd p, fst p) }
 | t = type_; FULLSTOP { Program.Type t }
 | KIND; t = kind; FULLSTOP { Program.Type t }
 | MODE; m = mode; FULLSTOP { Program.Mode m }
@@ -118,7 +118,20 @@ chr_rule:
   }
 
 pred:
-| { assert false }
+| attributes = pred_attributes; PRED;
+  c = constant; args = separated_list(CONJ,pred_item) { 
+   let name = Func.from_string c in
+   { Mode.loc=loc $loc; name; args = List.map fst args },
+   { Type.loc=loc $loc; attributes; name;
+     ty = List.fold_right (fun (_,t) ty ->
+       mkApp (loc $loc(c)) [mkCon "->";t;ty]) args (mkCon "prop") }
+ }
+pred_item:
+| io = IO; COLON; ty = ctype_term {
+    if io = 'i' then (true, ty)
+    else if io = 'o' then (false, ty)
+    else assert false
+}
 
 kind:
 | KIND; names = separated_nonempty_list(CONJ,constant); k = kind_term {
@@ -317,3 +330,4 @@ constant:
 | c = CLAUSE_ATTRIBUTE { c }
 | c = ATTRIBUTE { c }
 | PRED_ATTRIBUTE { "index" }
+| c = IO { String.make 1 c }

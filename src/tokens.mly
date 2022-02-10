@@ -18,6 +18,7 @@
 %token PIPE
 %token AS
 %token IS
+%token <char> IO
 %token ARROW
 %token DARROW
 %token DIV

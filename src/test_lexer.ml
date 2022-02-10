@@ -46,6 +46,7 @@ type t = Tokens.token =
   | LBRACKET
   | KIND
   | IS
+  | IO of ( char )
   | INTEGER of ( int )
   | IMPORT
   | IFF
