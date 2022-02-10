@@ -97,7 +97,7 @@ decl:
 | p = pred; FULLSTOP { Program.Pred (snd p, fst p) }
 | t = type_; FULLSTOP { Program.Type t }
 | KIND; t = kind; FULLSTOP { Program.Type t }
-| MODE; m = mode; FULLSTOP { Program.Mode m }
+| MODE; m = mode; FULLSTOP { Program.Mode [m] }
 | MACRO; m = macro; FULLSTOP { Program.Macro m }
 | CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, List.map Func.from_string cl) }
 | NAMESPACE; c = constant { Program.Namespace(loc $loc, Func.from_string c )}
@@ -127,9 +127,11 @@ pred:
        mkApp (loc $loc(c)) [mkCon "->";t;ty]) args (mkCon "prop") }
  }
 pred_item:
-| io = IO; COLON; ty = ctype_term {
-    if io = 'i' then (true, ty)
-    else if io = 'o' then (false, ty)
+| io = i_o; COLON; ty = ctype_term { (io,ty) }
+i_o:
+| io = IO { 
+    if io = 'i' then true
+    else if io = 'o' then false
     else assert false
 }
 
@@ -165,7 +167,9 @@ type_attributes:
 | a = pred_attributes { a }
 
 mode:
-| { assert false }
+| LPAREN; c = constant; l = nonempty_list(i_o); RPAREN {
+    { Mode.name = Func.from_string c; args = l; loc = loc $loc } 
+}
 
 macro:
 | { assert false }
