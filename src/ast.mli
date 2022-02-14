@@ -162,7 +162,7 @@ module Program : sig
     | Shorten of Loc.t * (Func.t * Func.t) list (* prefix suffix *)
     | End of Loc.t
 
-    | Accumulated of Loc.t * (Digest.t * decl list)
+    | Accumulated of Loc.t * (Digest.t * decl list) list
 
     (* data *)
     | Clause of (Term.t, Clause.attribute list) Clause.t

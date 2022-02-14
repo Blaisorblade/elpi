@@ -69,32 +69,6 @@ let decode_sequent t =
   | App(Const c,[hyps;bo]) when c == Func.sequentf -> hyps, bo
   | _ -> underscore (), t
 
-let self : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> Ast.decl list =
-  ref (fun lexer lexbuf -> assert false)
-
-let parse = ref []
-
-let resolve = assert false
-
-let parse filename =
-  let prefixname, filename = resolve filename in
-  let c = open_in filename in
-  let lexbuf = Lexing.from_channel c in
-  let buffer, lexer = MenhirLib.ErrorReports.wrap Lexer.token in
-  try
-    let p = Parser.program lexer lexbuf in
-    close_in c;
-    p
-    with Parser.Error stateid ->
-      let message = message_of_state stateid in
-      let where = MenhirLib.ErrorReports.show (chunk s) buffer in
-      Printf.eprintf "%s\nerror parsing '%s' at char %d\n%s%!" where s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum message;
-      exit 1
-
-
-let accumulate loc extension modnames =
-  List.map (fun file -> parse (file ^ extension)) modnames
-
 %}
 
 %on_error_reduce term
@@ -148,9 +122,15 @@ decl:
 | TYPEABBREV; a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
 | LCURLY { Program.Begin (loc $loc) }
 | RCURLY { Program.End (loc $loc) }
-| ACCUMULATE; l = separated_nonempty_list(CONJ,filename) { Program.Accumulated(loc $loc,List.map l)}
+| ACCUMULATE; l = separated_nonempty_list(CONJ,filename) {
+    Program.Accumulated(loc $loc,List.map (fun x -> !Parser_state.parse (x ^ ".elpi")) l)
+  }
 | ignored; FULLSTOP { Program.Ignored (loc $loc) }
 | f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $loc)}
+
+filename:
+| c = constant { c }
+| s = STRING { s }
 
 chr_rule:
 | attributes = chr_rule_attributes; RULE;
@@ -334,6 +314,7 @@ closed_term:
 
 term_:
 | t = oterm_ { t }
+| t = bterm_ { t }
 | t = cterm_ { t }
 
 cterm_:
@@ -347,9 +328,18 @@ cterm_:
 | LBRACKET; l = term_; RBRACKET { mkList l mkNil [] }
 | LBRACKET; l = term_; PIPE; tl = term_; RBRACKET { mkList l tl [] }
 
-oterm_:
-| hd = cterm_; arg = cterm_; { mkApp (loc $loc(hd)) [hd ; arg] } %prec OR
+bterm_:
 | t = constant; BIND; b = term_ { mkLam t b }
+
+aterm_:
+| c = cterm_ { c }
+| b = bterm_ { b }
+
+oterm_:
+| hd = cterm_; args = nonempty_list(aterm_); {
+    let t = mkApp (loc $loc(hd)) (hd :: args) in
+    desugar_multi_binder (loc $loc(hd)) t
+} %prec OR
 | l = term_; s = SYMB_PLUS;  r = term_ { App(mkCon s,[l;r]) }
 | l = term_; s = SYMB_TIMES; r = term_ { App(mkCon s,[l;r]) }
 | l = term_; s = SYMB_MINUS; r = term_ { App(mkCon s,[l;r]) }
@@ -382,3 +372,6 @@ constant:
 | c = ATTRIBUTE { c }
 | PRED_ATTRIBUTE { "index" }
 | c = IO { String.make 1 c }
+| CUT { "!" }
+| PI { "pi" }
+| FRESHUV { "_" }

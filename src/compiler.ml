@@ -650,7 +650,11 @@ end = struct (* {{{ *)
           aux ns ((Shorten([shorthand],p) :: cl2b clauses @ blocks))
             [] macros types tabbrs modes locals chr accs rest
 
-      | Program.Accumulated (loc,(digest,a)) :: rest ->
+      | Program.Accumulated (loc,[]) :: rest ->
+          aux ns blocks clauses macros types tabbrs modes locals chr accs rest
+
+      | Program.Accumulated (loc,(digest,a) :: more) :: rest ->
+          let rest = Program.Accumulated (loc, more) :: rest in
           let digest = String.concat "." (digest :: List.map F.show ns) in
           if StrSet.mem digest accs then
             aux ns blocks clauses macros types tabbrs modes locals chr accs rest

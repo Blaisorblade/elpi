@@ -545,7 +545,7 @@ let gram_extend loc { fix; sym = cst; prec = nprec } =
           prerr_endline ""; *)
 
 let accumulate loc extension modnames =
-  List.map (fun file -> Program.Accumulated(of_ploc loc, parse_one lp (file ^ extension))) modnames
+  List.map (fun file -> Program.Accumulated(of_ploc loc, [parse_one lp (file ^ extension)])) modnames
 
 EXTEND
   GLOBAL: lp goal atom;
