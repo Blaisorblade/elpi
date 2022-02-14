@@ -116,8 +116,8 @@ decl:
 | KIND; t = kind; FULLSTOP { Program.Type t }
 | MODE; m = mode; FULLSTOP { Program.Mode [m] }
 | MACRO; m = macro; FULLSTOP { Program.Macro m }
-| CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, List.map Func.from_string cl) }
-| NAMESPACE; c = constant { Program.Namespace(loc $loc, Func.from_string c )}
+| CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, cl) }
+| NAMESPACE; c = constant { Program.Namespace(loc $loc, c )}
 | SHORTEN; s = shorten; FULLSTOP { Program.Shorten(loc $loc, s) }
 | TYPEABBREV; a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
 | LCURLY { Program.Begin (loc $loc) }
@@ -129,7 +129,7 @@ decl:
 | f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $loc)}
 
 filename:
-| c = constant { c }
+| c = constant { Func.show c }
 | s = STRING { s }
 
 chr_rule:
@@ -144,7 +144,7 @@ chr_rule:
 pred:
 | attributes = pred_attributes; PRED;
   c = constant; args = separated_list(CONJ,pred_item) { 
-   let name = Func.from_string c in
+   let name = c in
    { Mode.loc=loc $loc; name; args = List.map fst args },
    { Type.loc=loc $loc; attributes; name;
      ty = List.fold_right (fun (_,t) ty ->
@@ -162,21 +162,21 @@ i_o:
 kind:
 | KIND; names = separated_nonempty_list(CONJ,constant); k = kind_term {
     names |> List.map (fun n->
-     { Type.loc=loc $loc; attributes=[]; name=Func.from_string n; ty=k })
+     { Type.loc=loc $loc; attributes=[]; name =  n; ty = k })
   }
 type_:
 | attributes = type_attributes;
   TYPE; names = separated_nonempty_list(CONJ,constant); t = type_term {
     names |> List.map (fun n->
-     { Type.loc=loc $loc; attributes; name=Func.from_string n; ty=t })
+     { Type.loc=loc $loc; attributes; name = n; ty = t })
   }
 
 ctype_term:
-| c = constant { let c = if c = "o" then "prop" else c in
-    mkCon c
+| c = constant { let c = if Func.show c = "o" then Func.from_string "prop" else c in
+    Const c
   }
-| hd = type_term; c = constant { let c = if c = "o" then "prop" else c in
-    mkApp (loc $loc(hd)) [hd;mkCon c]
+| hd = type_term; c = constant { let c = if Func.show c = "o" then Func.from_string "prop" else c in
+    mkApp (loc $loc(hd)) [hd;Const c]
   }
 | LPAREN; t = ctype_term; RPAREN { t }
 type_term:
@@ -192,7 +192,7 @@ type_attributes:
 
 mode:
 | LPAREN; c = constant; l = nonempty_list(i_o); RPAREN {
-    { Mode.name = Func.from_string c; args = l; loc = loc $loc } 
+    { Mode.name = c; args = l; loc = loc $loc } 
 }
 
 macro:
@@ -204,6 +204,7 @@ macro:
 typeabbrev:
 | a = abbrevform; t = type_term {
     let name, args = a in
+    let args = List.map Func.show args in
     let nparams = List.length args in
     let value = List.fold_right mkLam args t in
     { TypeAbbreviation.name = name;
@@ -213,8 +214,8 @@ typeabbrev:
   }
 
 abbrevform:
-| c = constant { Func.from_string c, [] }
-| LPAREN; hd = constant; args = nonempty_list(constant); RPAREN { Func.from_string hd, args  }
+| c = constant { c, [] }
+| LPAREN; hd = constant; args = nonempty_list(constant); RPAREN { hd, args  }
 
 
 ignored:
@@ -231,12 +232,12 @@ shorten:
 
 trie:
 | c = constant; FULLSTOP; LCURLY; l = separated_nonempty_list(CONJ,subtrie); RCURLY {
-    List.map (fun (p,x) -> c ^ "." ^ p, x) (List.flatten l)
+    List.map (fun (p,x) -> Func.show c ^ "." ^ p, x) (List.flatten l)
 }
 subtrie:
-| name = constant { [name,name] }
+| name = constant { [Func.show name, Func.show name] }
 | prefix = constant; FULLSTOP; LCURLY; l = separated_nonempty_list(CONJ,subtrie); RCURLY {
-    List.map (fun (p,x) -> prefix ^ "." ^ p, x) (List.flatten l)
+    List.map (fun (p,x) -> Func.show prefix ^ "." ^ p, x) (List.flatten l)
 }
 
 sequent:
@@ -246,7 +247,7 @@ sequent:
   }
 | LPAREN; c = constant; COLON; t = term; RPAREN {
     let context, conclusion = decode_sequent t in
-    { Chr.eigen = mkCon c; context; conclusion }
+    { Chr.eigen = Const c; context; conclusion }
   }
 
 goal:
@@ -318,7 +319,7 @@ term_:
 | t = cterm_ { t }
 
 cterm_:
-| t = constant { mkCon t }
+| t = constant { Const t }
 | x = INTEGER { mkC (cint.Util.CData.cin x)}
 | x = FLOAT { mkC (cfloat.Util.CData.cin x)}
 | x = STRING { mkC (cstring.Util.CData.cin x)}
@@ -329,7 +330,7 @@ cterm_:
 | LBRACKET; l = term_; PIPE; tl = term_; RBRACKET { mkList l tl [] }
 
 bterm_:
-| t = constant; BIND; b = term_ { mkLam t b }
+| t = constant; BIND; b = term_ { mkLam (Func.show t) b }
 
 aterm_:
 | c = cterm_ { c }
@@ -356,22 +357,23 @@ oterm_:
 | l = term_; CONJ;  r = term_ { App(mkCon ",",[l;r]) }
 | l = term_; OR;    r = term_ { App(mkCon ";",[l;r]) }
 | l = term_; AS;    r = term_ { App(mkCon "as",[l;r]) }
-| l = term_; IS;    r = term_ { App(mkCon "is",[l;r]) }
+| l = term_; IS;    r = term_ { App(Const Func.isf,[l;r]) }
 | l = term_; MOD;   r = term_ { App(mkCon "mod",[l;r]) }
 | l = term_; DIV;   r = term_ { App(mkCon "div",[l;r]) }
-| l = term_; ARROW; r = term_ { App(mkCon "->",[l;r]) }
-| l = term_; DARROW;r = term_ { App(mkCon "=>",[l;r]) }
-| l = term_; VDASH; r = term_ { App(mkCon ":-",[l;r]) }
-| l = term_; QDASH; r = term_ { App(mkCon "?-",[l;r]) }
+| l = term_; ARROW; r = term_ { App(Const Func.arrowf,[l;r]) }
+| l = term_; DARROW;r = term_ { App(Const Func.implf,[l;r]) }
+| l = term_; VDASH; r = term_ { App(Const Func.rimplf,[l;r]) }
+| l = term_; QDASH; r = term_ { App(Const Func.sequentf,[l;r]) }
 | s = SYMB_TILDE; r = term_ { App(mkCon s,[r]) }
 | l = term_; s = SYMB_QMARK; { App(mkCon s,[l]) }
 
 constant:
-| c = CONSTANT { c }
-| c = CLAUSE_ATTRIBUTE { c }
-| c = ATTRIBUTE { c }
-| PRED_ATTRIBUTE { "index" }
-| c = IO { String.make 1 c }
-| CUT { "!" }
-| PI { "pi" }
-| FRESHUV { "_" }
+| c = CONSTANT { Func.from_string c }
+| c = CLAUSE_ATTRIBUTE { Func.from_string c }
+| c = ATTRIBUTE { Func.from_string c }
+| PRED_ATTRIBUTE { Func.from_string @@ "index" }
+| c = IO { Func.from_string @@ String.make 1 c }
+| CUT { Func.cutf }
+| PI { Func.pif }
+| SIGMA { Func.sigmaf }
+| FRESHUV { Func.dummyname }
