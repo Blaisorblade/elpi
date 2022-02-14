@@ -26,6 +26,23 @@ let desugar_multi_binder loc = function
   | (App _ | Const _ | Lam _ | CData _ | Quoted _) as t -> t
 ;;
 
+let desugar_macro loc = function
+  | App(Const hd,[Const name; body]) when Func.equal hd Func.rimplf ->
+      if ((Func.show name).[0] != '@') then
+        raise (Stream.Error "Macro name must begin with @");
+      name, body
+  | App(Const hd,[App(Const name,args); body]) when Func.equal hd Func.rimplf ->
+      if ((Func.show name).[0] != '@') then
+        raise (Stream.Error "Macro name must begin with @");
+      let names = List.map (function
+        | Const x -> Func.show x
+        | (App _ | Lam _ | CData _ | Quoted _) ->
+              raise (Stream.Error "macro binder syntax")) args in
+      name, List.fold_right mkLam names body
+  | (App _ | Const _ | Lam _ | CData _ | Quoted _) as x ->
+        raise (Stream.Error ("Illformed macro:" ^ show x))
+;;
+
 let assert_fixity _ = assert false
 
 let rec mkList l stop acc =
@@ -51,6 +68,32 @@ let decode_sequent t =
   match t with
   | App(Const c,[hyps;bo]) when c == Func.sequentf -> hyps, bo
   | _ -> underscore (), t
+
+let self : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> Ast.decl list =
+  ref (fun lexer lexbuf -> assert false)
+
+let parse = ref []
+
+let resolve = assert false
+
+let parse filename =
+  let prefixname, filename = resolve filename in
+  let c = open_in filename in
+  let lexbuf = Lexing.from_channel c in
+  let buffer, lexer = MenhirLib.ErrorReports.wrap Lexer.token in
+  try
+    let p = Parser.program lexer lexbuf in
+    close_in c;
+    p
+    with Parser.Error stateid ->
+      let message = message_of_state stateid in
+      let where = MenhirLib.ErrorReports.show (chunk s) buffer in
+      Printf.eprintf "%s\nerror parsing '%s' at char %d\n%s%!" where s lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum message;
+      exit 1
+
+
+let accumulate loc extension modnames =
+  List.map (fun file -> parse (file ^ extension)) modnames
 
 %}
 
@@ -105,6 +148,7 @@ decl:
 | TYPEABBREV; a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
 | LCURLY { Program.Begin (loc $loc) }
 | RCURLY { Program.End (loc $loc) }
+| ACCUMULATE; l = separated_nonempty_list(CONJ,filename) { Program.Accumulated(loc $loc,List.map l)}
 | ignored; FULLSTOP { Program.Ignored (loc $loc) }
 | f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $loc)}
 
@@ -172,7 +216,10 @@ mode:
 }
 
 macro:
-| { assert false }
+| m = closed_term {
+  let name, body = desugar_macro (loc $loc) m in
+  { Macro.loc = loc $loc; name; body }
+}
 
 typeabbrev:
 | a = abbrevform; t = type_term {
