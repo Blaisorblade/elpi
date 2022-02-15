@@ -9,7 +9,7 @@
 
     let skip b n =
       let open Lexing in
-      b.lex_curr_p <- { b.lex_curr_p with pos_cnum = b.lex_curr_p.pos_cnum + n }      
+      b.lex_curr_p <- { b.lex_curr_p with pos_cnum = b.lex_curr_p.pos_cnum + n }
 
 }
 

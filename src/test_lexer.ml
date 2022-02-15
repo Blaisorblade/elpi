@@ -170,4 +170,5 @@ b
 c
 #line 7 "xx"
 a|}                                   [T(CONSTANT "b", 2, 1, 2);T(CONSTANT "c", 3, 3, 4);T(CONSTANT "a", 7, 5, 1) ];
-  
+  (*    01234567890123456789012345 *)
+  test  ":name"                       [T(COLON,1,0,1); T(ATTRIBUTE "name",1,0,5)];

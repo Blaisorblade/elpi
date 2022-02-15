@@ -9,8 +9,8 @@ let loc (startpos, endpos) = {
   Util.Loc.source_name = startpos.Lexing.pos_fname;
   source_start = startpos.Lexing.pos_cnum;
   source_stop = endpos.Lexing.pos_cnum;
-  line = startpos.Lexing.pos_lnum;
-  line_starts_at = startpos.Lexing.pos_bol;
+  line = endpos.Lexing.pos_lnum;
+  line_starts_at = endpos.Lexing.pos_bol;
 }
 
 let desugar_multi_binder loc = function
@@ -42,6 +42,11 @@ let desugar_macro loc = function
   | (App _ | Const _ | Lam _ | CData _ | Quoted _) as x ->
         raise (Stream.Error ("Illformed macro:" ^ show x))
 ;;
+
+let mkApp loc = function
+  | Const c :: a :: App (Const c1, args) :: [] when Func.(equal c andf && equal c1 andf) ->
+      mkApp loc (Const c :: a :: args)
+  | l -> mkApp loc l
 
 let assert_fixity _ = assert false
 
@@ -113,20 +118,20 @@ decl:
 | r = chr_rule; FULLSTOP { Program.Chr r }
 | p = pred; FULLSTOP { Program.Pred (snd p, fst p) }
 | t = type_; FULLSTOP { Program.Type t }
-| KIND; t = kind; FULLSTOP { Program.Type t }
-| MODE; m = mode; FULLSTOP { Program.Mode [m] }
-| MACRO; m = macro; FULLSTOP { Program.Macro m }
-| CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $loc, cl) }
-| NAMESPACE; c = constant { Program.Namespace(loc $loc, c )}
-| SHORTEN; s = shorten; FULLSTOP { Program.Shorten(loc $loc, s) }
-| TYPEABBREV; a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
-| LCURLY { Program.Begin (loc $loc) }
-| RCURLY { Program.End (loc $loc) }
+| t = kind; FULLSTOP { Program.Type t }
+| m = mode; FULLSTOP { Program.Mode [m] }
+| m = macro; FULLSTOP { Program.Macro m }
+| CONSTRAINT; cl = list(constant); LCURLY { Program.Constraint(loc $sloc, cl) }
+| NAMESPACE; c = constant { Program.Namespace(loc $sloc, c )}
+| SHORTEN; s = shorten; FULLSTOP { Program.Shorten(loc $sloc, s) }
+| a = typeabbrev; FULLSTOP { Program.TypeAbbreviation a }
+| LCURLY { Program.Begin (loc $sloc) }
+| RCURLY { Program.End (loc $sloc) }
 | ACCUMULATE; l = separated_nonempty_list(CONJ,filename) {
-    Program.Accumulated(loc $loc,List.map (fun x -> !Parser_state.parse (x ^ ".elpi")) l)
+    Program.Accumulated(loc $sloc,List.map (fun x -> !Parser_state.parse (x ^ ".elpi")) l)
   }
-| ignored; FULLSTOP { Program.Ignored (loc $loc) }
-| f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $loc)}
+| ignored; FULLSTOP { Program.Ignored (loc $sloc) }
+| f = fixity; FULLSTOP { assert_fixity f; Program.Ignored (loc $sloc)}
 
 filename:
 | c = constant { Func.show c }
@@ -138,15 +143,15 @@ chr_rule:
   to_remove = preceded(BIND,nonempty_list(sequent))?;
   guard = preceded(PIPE,term)?;
   new_goal = preceded(IFF,sequent)? {
-    Chr.create ~to_match ?to_remove ?guard ?new_goal ~attributes ~loc:(loc $loc) ()
+    Chr.create ~to_match ?to_remove ?guard ?new_goal ~attributes ~loc:(loc $sloc) ()
   }
 
 pred:
 | attributes = pred_attributes; PRED;
   c = constant; args = separated_list(CONJ,pred_item) { 
    let name = c in
-   { Mode.loc=loc $loc; name; args = List.map fst args },
-   { Type.loc=loc $loc; attributes; name;
+   { Mode.loc=loc $sloc; name; args = List.map fst args },
+   { Type.loc=loc $sloc; attributes; name;
      ty = List.fold_right (fun (_,t) ty ->
        mkApp (loc $loc(c)) [mkCon "->";t;ty]) args (mkCon "prop") }
  }
@@ -162,13 +167,13 @@ i_o:
 kind:
 | KIND; names = separated_nonempty_list(CONJ,constant); k = kind_term {
     names |> List.map (fun n->
-     { Type.loc=loc $loc; attributes=[]; name =  n; ty = k })
+     { Type.loc=loc $sloc; attributes=[]; name =  n; ty = k })
   }
 type_:
 | attributes = type_attributes;
   TYPE; names = separated_nonempty_list(CONJ,constant); t = type_term {
     names |> List.map (fun n->
-     { Type.loc=loc $loc; attributes; name = n; ty = t })
+     { Type.loc=loc $sloc; attributes; name = n; ty = t })
   }
 
 ctype_term:
@@ -178,10 +183,10 @@ ctype_term:
 | hd = type_term; c = constant { let c = if Func.show c = "o" then Func.from_string "prop" else c in
     mkApp (loc $loc(hd)) [hd;Const c]
   }
-| LPAREN; t = ctype_term; RPAREN { t }
+| LPAREN; t = type_term; RPAREN { t }
 type_term:
 | t = ctype_term { t }
-| hd = ctype_term; ARROW; t = ctype_term { mkApp (loc $loc(hd)) [mkCon "->"; hd; t] }
+| hd = ctype_term; ARROW; t = type_term { mkApp (loc $loc(hd)) [mkCon "->"; hd; t] }
 
 kind_term:
 | TYPE { mkCon "type" }
@@ -191,18 +196,18 @@ type_attributes:
 | a = pred_attributes { a }
 
 mode:
-| LPAREN; c = constant; l = nonempty_list(i_o); RPAREN {
-    { Mode.name = c; args = l; loc = loc $loc } 
+| MODE; LPAREN; c = constant; l = nonempty_list(i_o); RPAREN {
+    { Mode.name = c; args = l; loc = loc $sloc } 
 }
 
 macro:
-| m = closed_term {
-  let name, body = desugar_macro (loc $loc) m in
-  { Macro.loc = loc $loc; name; body }
+| MACRO; m = closed_term {
+  let name, body = desugar_macro (loc $sloc) m in
+  { Macro.loc = loc $sloc; name; body }
 }
 
 typeabbrev:
-| a = abbrevform; t = type_term {
+| TYPEABBREV; a = abbrevform; t = type_term {
     let name, args = a in
     let args = List.map Func.show args in
     let nparams = List.length args in
@@ -210,7 +215,7 @@ typeabbrev:
     { TypeAbbreviation.name = name;
       nparams = nparams;
       value = value;
-      loc = loc $loc }
+      loc = loc $sloc }
   }
 
 abbrevform:
@@ -219,8 +224,8 @@ abbrevform:
 
 
 ignored:
-| MODULE; constant { Program.Ignored (loc $loc) }
-| SIG; constant { Program.Ignored (loc $loc) }
+| MODULE; constant { Program.Ignored (loc $sloc) }
+| SIG; constant { Program.Ignored (loc $sloc) }
 
 fixity:
 | { assert false }
@@ -251,12 +256,12 @@ sequent:
   }
 
 goal:
-| g = term; EOF { ( loc $loc , g ) }
-| g = term; FULLSTOP { ( loc $loc , g ) }
+| g = term; EOF { ( loc $sloc , g ) }
+| g = term; FULLSTOP { ( loc $sloc , g ) }
 
 clause:
 | attributes = clause_attributes; body = term; {
-    { Clause.loc = loc $loc;
+    { Clause.loc = loc $sloc;
       attributes;
       body;
     }
@@ -275,9 +280,11 @@ clause_attribute:
     else assert false
   }
 
+merge all attributes otherwise the grammar is ambiguous
+
 chr_rule_attributes:
 | { [] }
-| COLON; l = separated_nonempty_list(COLON, chr_rule_attribute) { l }
+(*| COLON; l = separated_nonempty_list(COLON, chr_rule_attribute) { l }*)
 
 chr_rule_attribute:
 | c = chr_rule_attribute_kwd; s = STRING {
@@ -354,7 +361,7 @@ oterm_:
 | l = term_; s = SYMB_SLASH; r = term_ { App(mkCon s,[l;r]) }
 | l = term_; s = SYMB_BTICK; r = term_ { App(mkCon s,[l;r]) }
 | l = term_; s = SYMB_TICK;  r = term_ { App(mkCon s,[l;r]) }
-| l = term_; CONJ;  r = term_ { App(mkCon ",",[l;r]) }
+| l = term_; CONJ;  r = term_ { mkApp (loc $loc(l)) [Const Func.andf; l; r] }
 | l = term_; OR;    r = term_ { App(mkCon ";",[l;r]) }
 | l = term_; AS;    r = term_ { App(mkCon "as",[l;r]) }
 | l = term_; IS;    r = term_ { App(Const Func.isf,[l;r]) }

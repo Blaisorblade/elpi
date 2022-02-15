@@ -92,9 +92,45 @@ let test_parser2_on_goal x =
   with e -> Printf.eprintf "parser2: %s\n%!" (Printexc.to_string e)
 
 module Parse = struct
+
+  let eq_loc x y =
+    match x, y with
+    | { Util.Loc.source_name = n1; source_start = s1; source_stop = r1; line = l1; line_starts_at = bl1 },
+      { Util.Loc.source_name = n2; source_start = s2; source_stop = r2; line = l2; line_starts_at = bl2 } ->
+        n1 = n2 &&
+        s1 = s2 &&
+        r1 + 1 = r2 &&
+        l1 = l2 
+        (*bl1 - 1 = bl2*)
+
+  let eq x y =
+    match x,y with
+    | EA.Program.Clause { EA.Clause.loc = loc1; attributes = attributes1; body = body1 },
+      EA.Program.Clause { EA.Clause.loc = loc2; attributes = attributes2; body = body2 } ->
+        attributes1 = attributes2 &&
+        body1 = body2 &&
+        eq_loc loc1 loc2
+    | _ -> true
+
   let program ~elpi:(ps,_) ?(print_accumulated_files=false) l =
-    List.iter (fun file -> ignore(!Parser_state.parse file)) l;
-    Parser.parse_program ps ~print_accumulated_files l
+    let _new_ast = List.(concat @@ map (fun file -> snd @@ !Parser_state.parse file) l) in
+    let old_ast = Parser.parse_program ps ~print_accumulated_files l in
+    (*
+    if not (List.for_all2 eq new_ast old_ast) then begin
+      let f1 = Filename.temp_file "parser_out" "txt" in
+      let f2 = Filename.temp_file "parser_out" "txt" in
+      let oc1 = open_out f1 in
+      let oc2 = open_out f2 in
+      output_string oc1 (EA.Program.show old_ast);
+      output_string oc2 (EA.Program.show new_ast);
+      close_out oc1;
+      close_out oc2;
+      let _ = Sys.command (Printf.sprintf "cat %s; cat %s;wdiff -t %s %s" f1 f2 f1 f2) in
+      exit 1
+    end;
+    *)
+    old_ast
+
   let program_from_stream ~elpi:(ps,_) ?(print_accumulated_files=false) =
     Parser.parse_program_from_stream ps ~print_accumulated_files
   let goal loc s =

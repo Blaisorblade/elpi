@@ -156,7 +156,7 @@ Unexpected start of program clause or declaration.
 
 program: CONSTANT RPAREN
 ##
-## Ends in an error in state: 237.
+## Ends in an error in state: 228.
 ##
 ## decl -> clause . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -170,14 +170,14 @@ program: CONSTANT RPAREN
 ## In state 30, spurious reduction of production cterm_ -> constant
 ## In state 27, spurious reduction of production term_ -> cterm_
 ## In state 86, spurious reduction of production term -> term_
-## In state 236, spurious reduction of production clause -> clause_attributes term
+## In state 227, spurious reduction of production clause -> clause_attributes term
 ##
 
 Unexpected ')'.
 
 program: CONSTANT FULLSTOP VDASH
 ##
-## Ends in an error in state: 233.
+## Ends in an error in state: 224.
 ##
 ## program -> decl . program [ # ]
 ##
@@ -192,9 +192,8 @@ Unexpected start of program clause or declaration.
 
 program: COLON VDASH
 ##
-## Ends in an error in state: 173.
+## Ends in an error in state: 163.
 ##
-## chr_rule_attributes -> COLON . separated_nonempty_list(COLON,chr_rule_attribute) [ RULE ]
 ## clause_attributes -> COLON . separated_nonempty_list(COLON,clause_attribute) [ SYMB_TILDE STRING SIGMA PRED_ATTRIBUTE PI LPAREN LCURLY LBRACKET IO INTEGER FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ## pred_attributes -> COLON . separated_nonempty_list(COLON,pred_attribute) [ TYPE PRED ]
 ##
@@ -1579,7 +1578,7 @@ program: TYPEABBREV VDASH
 ##
 ## Ends in an error in state: 92.
 ##
-## decl -> TYPEABBREV . typeabbrev FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
+## typeabbrev -> TYPEABBREV . abbrevform type_term [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
 ## TYPEABBREV
@@ -1626,21 +1625,21 @@ program: TYPEABBREV LPAREN ATTRIBUTE ATTRIBUTE VDASH
 
 program: TYPEABBREV ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 102.
+## Ends in an error in state: 100.
 ##
-## typeabbrev -> abbrevform . type_term [ FULLSTOP ]
+## typeabbrev -> TYPEABBREV abbrevform . type_term [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
-## abbrevform
+## TYPEABBREV abbrevform
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: TYPEABBREV ATTRIBUTE LPAREN VDASH
 ##
-## Ends in an error in state: 103.
+## Ends in an error in state: 101.
 ##
-## ctype_term -> LPAREN . ctype_term RPAREN [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+## ctype_term -> LPAREN . type_term RPAREN [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
 ##
 ## The known suffix of the stack is as follows:
 ## LPAREN
@@ -1648,70 +1647,31 @@ program: TYPEABBREV ATTRIBUTE LPAREN VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: TYPEABBREV ATTRIBUTE LPAREN ATTRIBUTE ARROW ATTRIBUTE FULLSTOP
+program: TYPEABBREV ATTRIBUTE LPAREN ATTRIBUTE FULLSTOP
 ##
-## Ends in an error in state: 104.
+## Ends in an error in state: 102.
 ##
-## ctype_term -> type_term . constant [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+## ctype_term -> type_term . constant [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+## ctype_term -> LPAREN type_term . RPAREN [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
 ##
 ## The known suffix of the stack is as follows:
-## type_term
+## LPAREN type_term
 ##
 ## WARNING: This example involves spurious reductions.
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 109, spurious reduction of production type_term -> ctype_term ARROW ctype_term
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: TYPEABBREV ATTRIBUTE LPAREN ATTRIBUTE VDASH
-##
-## Ends in an error in state: 106.
-##
-## ctype_term -> LPAREN ctype_term . RPAREN [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
-## type_term -> ctype_term . [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-## type_term -> ctype_term . ARROW ctype_term [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-##
-## The known suffix of the stack is as follows:
-## LPAREN ctype_term
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: TYPEABBREV ATTRIBUTE ATTRIBUTE ARROW VDASH
-##
-## Ends in an error in state: 108.
-##
-## type_term -> ctype_term ARROW . ctype_term [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-##
-## The known suffix of the stack is as follows:
-## ctype_term ARROW
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: TYPEABBREV ATTRIBUTE ATTRIBUTE ARROW ATTRIBUTE VDASH
-##
-## Ends in an error in state: 109.
-##
-## type_term -> ctype_term . [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-## type_term -> ctype_term . ARROW ctype_term [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-## type_term -> ctype_term ARROW ctype_term . [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-##
-## The known suffix of the stack is as follows:
-## ctype_term ARROW ctype_term
+## In state 105, spurious reduction of production type_term -> ctype_term
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: TYPEABBREV ATTRIBUTE ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 112.
+## Ends in an error in state: 105.
 ##
-## type_term -> ctype_term . [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-## type_term -> ctype_term . ARROW ctype_term [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
+## type_term -> ctype_term . [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
+## type_term -> ctype_term . ARROW type_term [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ##
 ## The known suffix of the stack is as follows:
 ## ctype_term
@@ -1719,9 +1679,40 @@ program: TYPEABBREV ATTRIBUTE ATTRIBUTE VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
+program: TYPEABBREV ATTRIBUTE ATTRIBUTE ARROW VDASH
+##
+## Ends in an error in state: 106.
+##
+## type_term -> ctype_term ARROW . type_term [ SIGMA RPAREN PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
+##
+## The known suffix of the stack is as follows:
+## ctype_term ARROW
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+program: TYPEABBREV ATTRIBUTE ATTRIBUTE RPAREN
+##
+## Ends in an error in state: 109.
+##
+## ctype_term -> type_term . constant [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+## typeabbrev -> TYPEABBREV abbrevform type_term . [ FULLSTOP ]
+##
+## The known suffix of the stack is as follows:
+## TYPEABBREV abbrevform type_term
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 105, spurious reduction of production type_term -> ctype_term
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
 program: SIG VDASH
 ##
-## Ends in an error in state: 113.
+## Ends in an error in state: 110.
 ##
 ## ignored -> SIG . constant [ FULLSTOP ]
 ##
@@ -1733,7 +1724,7 @@ program: SIG VDASH
 
 program: SHORTEN VDASH
 ##
-## Ends in an error in state: 115.
+## Ends in an error in state: 112.
 ##
 ## decl -> SHORTEN . shorten FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -1745,7 +1736,7 @@ program: SHORTEN VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE RCURLY VDASH
 ##
-## Ends in an error in state: 117.
+## Ends in an error in state: 114.
 ##
 ## decl -> SHORTEN shorten . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -1757,7 +1748,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE RCURLY VDASH
 
 program: SHORTEN ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 119.
+## Ends in an error in state: 116.
 ##
 ## trie -> constant . FULLSTOP LCURLY separated_nonempty_list(CONJ,subtrie) RCURLY [ FULLSTOP ]
 ##
@@ -1769,7 +1760,7 @@ program: SHORTEN ATTRIBUTE VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP VDASH
 ##
-## Ends in an error in state: 120.
+## Ends in an error in state: 117.
 ##
 ## trie -> constant FULLSTOP . LCURLY separated_nonempty_list(CONJ,subtrie) RCURLY [ FULLSTOP ]
 ##
@@ -1781,7 +1772,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY VDASH
 ##
-## Ends in an error in state: 121.
+## Ends in an error in state: 118.
 ##
 ## trie -> constant FULLSTOP LCURLY . separated_nonempty_list(CONJ,subtrie) RCURLY [ FULLSTOP ]
 ##
@@ -1793,7 +1784,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE RCURLY VDASH
 ##
-## Ends in an error in state: 122.
+## Ends in an error in state: 119.
 ##
 ## separated_nonempty_list(CONJ,subtrie) -> subtrie . [ RCURLY ]
 ## separated_nonempty_list(CONJ,subtrie) -> subtrie . CONJ separated_nonempty_list(CONJ,subtrie) [ RCURLY ]
@@ -1806,7 +1797,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE R
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE CONJ VDASH
 ##
-## Ends in an error in state: 123.
+## Ends in an error in state: 120.
 ##
 ## separated_nonempty_list(CONJ,subtrie) -> subtrie CONJ . separated_nonempty_list(CONJ,subtrie) [ RCURLY ]
 ##
@@ -1818,7 +1809,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE CONJ VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 125.
+## Ends in an error in state: 122.
 ##
 ## subtrie -> constant . [ RCURLY CONJ ]
 ## subtrie -> constant . FULLSTOP LCURLY separated_nonempty_list(CONJ,subtrie) RCURLY [ RCURLY CONJ ]
@@ -1831,7 +1822,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP VDASH
 ##
-## Ends in an error in state: 126.
+## Ends in an error in state: 123.
 ##
 ## subtrie -> constant FULLSTOP . LCURLY separated_nonempty_list(CONJ,subtrie) RCURLY [ RCURLY CONJ ]
 ##
@@ -1843,7 +1834,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP VDASH
 
 program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP LCURLY VDASH
 ##
-## Ends in an error in state: 127.
+## Ends in an error in state: 124.
 ##
 ## subtrie -> constant FULLSTOP LCURLY . separated_nonempty_list(CONJ,subtrie) RCURLY [ RCURLY CONJ ]
 ##
@@ -1855,7 +1846,7 @@ program: SHORTEN ATTRIBUTE FULLSTOP LCURLY ATTRIBUTE FULLSTOP LCURLY VDASH
 
 program: NAMESPACE VDASH
 ##
-## Ends in an error in state: 133.
+## Ends in an error in state: 130.
 ##
 ## decl -> NAMESPACE . constant [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -1867,7 +1858,7 @@ program: NAMESPACE VDASH
 
 program: MODULE VDASH
 ##
-## Ends in an error in state: 135.
+## Ends in an error in state: 132.
 ##
 ## ignored -> MODULE . constant [ FULLSTOP ]
 ##
@@ -1879,9 +1870,9 @@ program: MODULE VDASH
 
 program: MODE VDASH
 ##
-## Ends in an error in state: 137.
+## Ends in an error in state: 134.
 ##
-## decl -> MODE . mode FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
+## mode -> MODE . LPAREN constant nonempty_list(i_o) RPAREN [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
 ## MODE
@@ -1891,31 +1882,31 @@ program: MODE VDASH
 
 program: MODE LPAREN VDASH
 ##
-## Ends in an error in state: 138.
+## Ends in an error in state: 135.
 ##
-## mode -> LPAREN . constant nonempty_list(i_o) RPAREN [ FULLSTOP ]
+## mode -> MODE LPAREN . constant nonempty_list(i_o) RPAREN [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
-## LPAREN
+## MODE LPAREN
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: MODE LPAREN ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 139.
+## Ends in an error in state: 136.
 ##
-## mode -> LPAREN constant . nonempty_list(i_o) RPAREN [ FULLSTOP ]
+## mode -> MODE LPAREN constant . nonempty_list(i_o) RPAREN [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
-## LPAREN constant
+## MODE LPAREN constant
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: MODE LPAREN ATTRIBUTE IO VDASH
 ##
-## Ends in an error in state: 143.
+## Ends in an error in state: 140.
 ##
 ## nonempty_list(i_o) -> i_o . [ RPAREN ]
 ## nonempty_list(i_o) -> i_o . nonempty_list(i_o) [ RPAREN ]
@@ -1926,23 +1917,11 @@ program: MODE LPAREN ATTRIBUTE IO VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: MODE LPAREN ATTRIBUTE IO RPAREN VDASH
-##
-## Ends in an error in state: 145.
-##
-## decl -> MODE mode . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
-##
-## The known suffix of the stack is as follows:
-## MODE mode
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 program: MACRO VDASH
 ##
-## Ends in an error in state: 147.
+## Ends in an error in state: 142.
 ##
-## decl -> MACRO . macro FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
+## macro -> MACRO . closed_term [ FULLSTOP ]
 ##
 ## The known suffix of the stack is as follows:
 ## MACRO
@@ -1950,33 +1929,9 @@ program: MACRO VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: MACRO ATTRIBUTE VDASH
-##
-## Ends in an error in state: 148.
-##
-## decl -> MACRO macro . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
-##
-## The known suffix of the stack is as follows:
-## MACRO macro
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 program: KIND VDASH
 ##
-## Ends in an error in state: 154.
-##
-## decl -> KIND . kind FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
-##
-## The known suffix of the stack is as follows:
-## KIND
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-program: KIND KIND VDASH
-##
-## Ends in an error in state: 155.
+## Ends in an error in state: 147.
 ##
 ## kind -> KIND . separated_nonempty_list(CONJ,constant) kind_term [ FULLSTOP ]
 ##
@@ -1986,9 +1941,9 @@ program: KIND KIND VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: KIND KIND ATTRIBUTE PRED_ATTRIBUTE
+program: KIND ATTRIBUTE SIGMA
 ##
-## Ends in an error in state: 156.
+## Ends in an error in state: 148.
 ##
 ## kind -> KIND separated_nonempty_list(CONJ,constant) . kind_term [ FULLSTOP ]
 ##
@@ -1999,14 +1954,14 @@ program: KIND KIND ATTRIBUTE PRED_ATTRIBUTE
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 161, spurious reduction of production separated_nonempty_list(CONJ,constant) -> constant
+## In state 153, spurious reduction of production separated_nonempty_list(CONJ,constant) -> constant
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: KIND KIND ATTRIBUTE TYPE VDASH
+program: KIND ATTRIBUTE TYPE VDASH
 ##
-## Ends in an error in state: 157.
+## Ends in an error in state: 149.
 ##
 ## kind_term -> TYPE . [ FULLSTOP ]
 ## kind_term -> TYPE . ARROW kind_term [ FULLSTOP ]
@@ -2017,9 +1972,9 @@ program: KIND KIND ATTRIBUTE TYPE VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: KIND KIND ATTRIBUTE TYPE ARROW VDASH
+program: KIND ATTRIBUTE TYPE ARROW VDASH
 ##
-## Ends in an error in state: 158.
+## Ends in an error in state: 150.
 ##
 ## kind_term -> TYPE ARROW . kind_term [ FULLSTOP ]
 ##
@@ -2029,9 +1984,9 @@ program: KIND KIND ATTRIBUTE TYPE ARROW VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: TYPE ATTRIBUTE VDASH
+program: KIND ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 161.
+## Ends in an error in state: 153.
 ##
 ## separated_nonempty_list(CONJ,constant) -> constant . [ TYPE SIGMA PRED_ATTRIBUTE PI LPAREN IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ## separated_nonempty_list(CONJ,constant) -> constant . CONJ separated_nonempty_list(CONJ,constant) [ TYPE SIGMA PRED_ATTRIBUTE PI LPAREN IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
@@ -2042,9 +1997,9 @@ program: TYPE ATTRIBUTE VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
-program: TYPE ATTRIBUTE CONJ VDASH
+program: KIND ATTRIBUTE CONJ VDASH
 ##
-## Ends in an error in state: 162.
+## Ends in an error in state: 154.
 ##
 ## separated_nonempty_list(CONJ,constant) -> constant CONJ . separated_nonempty_list(CONJ,constant) [ TYPE SIGMA PRED_ATTRIBUTE PI LPAREN IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ##
@@ -2056,7 +2011,7 @@ program: TYPE ATTRIBUTE CONJ VDASH
 
 program: CONSTRAINT VDASH
 ##
-## Ends in an error in state: 168.
+## Ends in an error in state: 158.
 ##
 ## decl -> CONSTRAINT . list(constant) LCURLY [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -2068,7 +2023,7 @@ program: CONSTRAINT VDASH
 
 program: CONSTRAINT ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 171.
+## Ends in an error in state: 161.
 ##
 ## list(constant) -> constant . list(constant) [ LCURLY ]
 ##
@@ -2080,7 +2035,7 @@ program: CONSTRAINT ATTRIBUTE VDASH
 
 program: COLON PRED_ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 174.
+## Ends in an error in state: 164.
 ##
 ## pred_attribute -> PRED_ATTRIBUTE . LPAREN nonempty_list(indexing) RPAREN [ TYPE PRED COLON ]
 ##
@@ -2092,7 +2047,7 @@ program: COLON PRED_ATTRIBUTE VDASH
 
 program: COLON PRED_ATTRIBUTE LPAREN VDASH
 ##
-## Ends in an error in state: 175.
+## Ends in an error in state: 165.
 ##
 ## pred_attribute -> PRED_ATTRIBUTE LPAREN . nonempty_list(indexing) RPAREN [ TYPE PRED COLON ]
 ##
@@ -2104,7 +2059,7 @@ program: COLON PRED_ATTRIBUTE LPAREN VDASH
 
 program: COLON PRED_ATTRIBUTE LPAREN FRESHUV VDASH
 ##
-## Ends in an error in state: 180.
+## Ends in an error in state: 170.
 ##
 ## nonempty_list(indexing) -> indexing . [ RPAREN ]
 ## nonempty_list(indexing) -> indexing . nonempty_list(indexing) [ RPAREN ]
@@ -2117,7 +2072,7 @@ program: COLON PRED_ATTRIBUTE LPAREN FRESHUV VDASH
 
 program: COLON PRED_ATTRIBUTE LPAREN FRESHUV RPAREN VDASH
 ##
-## Ends in an error in state: 187.
+## Ends in an error in state: 176.
 ##
 ## separated_nonempty_list(COLON,pred_attribute) -> pred_attribute . [ TYPE PRED ]
 ## separated_nonempty_list(COLON,pred_attribute) -> pred_attribute . COLON separated_nonempty_list(COLON,pred_attribute) [ TYPE PRED ]
@@ -2130,7 +2085,7 @@ program: COLON PRED_ATTRIBUTE LPAREN FRESHUV RPAREN VDASH
 
 program: COLON PRED_ATTRIBUTE LPAREN FRESHUV RPAREN COLON VDASH
 ##
-## Ends in an error in state: 188.
+## Ends in an error in state: 177.
 ##
 ## separated_nonempty_list(COLON,pred_attribute) -> pred_attribute COLON . separated_nonempty_list(COLON,pred_attribute) [ TYPE PRED ]
 ##
@@ -2142,7 +2097,7 @@ program: COLON PRED_ATTRIBUTE LPAREN FRESHUV RPAREN COLON VDASH
 
 program: COLON ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 190.
+## Ends in an error in state: 179.
 ##
 ## clause_attribute -> clause_attribute_kwd . STRING [ SYMB_TILDE STRING SIGMA PRED_ATTRIBUTE PI LPAREN LCURLY LBRACKET IO INTEGER FRESHUV FLOAT CUT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ##
@@ -2154,7 +2109,7 @@ program: COLON ATTRIBUTE VDASH
 
 program: COLON ATTRIBUTE STRING VDASH
 ##
-## Ends in an error in state: 192.
+## Ends in an error in state: 181.
 ##
 ## separated_nonempty_list(COLON,clause_attribute) -> clause_attribute . [ SYMB_TILDE STRING SIGMA PRED_ATTRIBUTE PI LPAREN LCURLY LBRACKET IO INTEGER FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ## separated_nonempty_list(COLON,clause_attribute) -> clause_attribute . COLON separated_nonempty_list(COLON,clause_attribute) [ SYMB_TILDE STRING SIGMA PRED_ATTRIBUTE PI LPAREN LCURLY LBRACKET IO INTEGER FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
@@ -2167,7 +2122,7 @@ program: COLON ATTRIBUTE STRING VDASH
 
 program: COLON ATTRIBUTE STRING COLON VDASH
 ##
-## Ends in an error in state: 193.
+## Ends in an error in state: 182.
 ##
 ## separated_nonempty_list(COLON,clause_attribute) -> clause_attribute COLON . separated_nonempty_list(COLON,clause_attribute) [ SYMB_TILDE STRING SIGMA PRED_ATTRIBUTE PI LPAREN LCURLY LBRACKET IO INTEGER FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ##
@@ -2179,7 +2134,7 @@ program: COLON ATTRIBUTE STRING COLON VDASH
 
 program: ACCUMULATE VDASH
 ##
-## Ends in an error in state: 202.
+## Ends in an error in state: 184.
 ##
 ## decl -> ACCUMULATE . separated_nonempty_list(CONJ,filename) [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -2191,7 +2146,7 @@ program: ACCUMULATE VDASH
 
 program: ACCUMULATE ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 205.
+## Ends in an error in state: 187.
 ##
 ## separated_nonempty_list(CONJ,filename) -> filename . [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ## separated_nonempty_list(CONJ,filename) -> filename . CONJ separated_nonempty_list(CONJ,filename) [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
@@ -2204,7 +2159,7 @@ program: ACCUMULATE ATTRIBUTE VDASH
 
 program: ACCUMULATE ATTRIBUTE CONJ VDASH
 ##
-## Ends in an error in state: 206.
+## Ends in an error in state: 188.
 ##
 ## separated_nonempty_list(CONJ,filename) -> filename CONJ . separated_nonempty_list(CONJ,filename) [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -2216,7 +2171,7 @@ program: ACCUMULATE ATTRIBUTE CONJ VDASH
 
 program: TYPE VDASH
 ##
-## Ends in an error in state: 210.
+## Ends in an error in state: 194.
 ##
 ## type_ -> type_attributes TYPE . separated_nonempty_list(CONJ,constant) type_term [ FULLSTOP ]
 ##
@@ -2228,7 +2183,7 @@ program: TYPE VDASH
 
 program: TYPE ATTRIBUTE TYPE
 ##
-## Ends in an error in state: 211.
+## Ends in an error in state: 195.
 ##
 ## type_ -> type_attributes TYPE separated_nonempty_list(CONJ,constant) . type_term [ FULLSTOP ]
 ##
@@ -2239,14 +2194,33 @@ program: TYPE ATTRIBUTE TYPE
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 161, spurious reduction of production separated_nonempty_list(CONJ,constant) -> constant
+## In state 153, spurious reduction of production separated_nonempty_list(CONJ,constant) -> constant
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+program: TYPE ATTRIBUTE ATTRIBUTE RPAREN
+##
+## Ends in an error in state: 196.
+##
+## ctype_term -> type_term . constant [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+## type_ -> type_attributes TYPE separated_nonempty_list(CONJ,constant) type_term . [ FULLSTOP ]
+##
+## The known suffix of the stack is as follows:
+## type_attributes TYPE separated_nonempty_list(CONJ,constant) type_term
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 105, spurious reduction of production type_term -> ctype_term
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: EXTERNAL VDASH
 ##
-## Ends in an error in state: 216.
+## Ends in an error in state: 200.
 ##
 ## pred -> pred_attributes . PRED constant loption(separated_nonempty_list(CONJ,pred_item)) [ FULLSTOP ]
 ## type_attributes -> pred_attributes . [ TYPE ]
@@ -2259,7 +2233,7 @@ program: EXTERNAL VDASH
 
 program: PRED VDASH
 ##
-## Ends in an error in state: 217.
+## Ends in an error in state: 201.
 ##
 ## pred -> pred_attributes PRED . constant loption(separated_nonempty_list(CONJ,pred_item)) [ FULLSTOP ]
 ##
@@ -2271,7 +2245,7 @@ program: PRED VDASH
 
 program: PRED ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 218.
+## Ends in an error in state: 202.
 ##
 ## pred -> pred_attributes PRED constant . loption(separated_nonempty_list(CONJ,pred_item)) [ FULLSTOP ]
 ##
@@ -2283,7 +2257,7 @@ program: PRED ATTRIBUTE VDASH
 
 program: PRED ATTRIBUTE IO COLON ATTRIBUTE CONJ VDASH
 ##
-## Ends in an error in state: 221.
+## Ends in an error in state: 205.
 ##
 ## separated_nonempty_list(CONJ,pred_item) -> pred_item CONJ . separated_nonempty_list(CONJ,pred_item) [ FULLSTOP ]
 ##
@@ -2295,7 +2269,7 @@ program: PRED ATTRIBUTE IO COLON ATTRIBUTE CONJ VDASH
 
 program: PRED ATTRIBUTE IO VDASH
 ##
-## Ends in an error in state: 223.
+## Ends in an error in state: 207.
 ##
 ## pred_item -> i_o . COLON ctype_term [ FULLSTOP CONJ ]
 ##
@@ -2307,7 +2281,7 @@ program: PRED ATTRIBUTE IO VDASH
 
 program: PRED ATTRIBUTE IO COLON VDASH
 ##
-## Ends in an error in state: 224.
+## Ends in an error in state: 208.
 ##
 ## pred_item -> i_o COLON . ctype_term [ FULLSTOP CONJ ]
 ##
@@ -2317,13 +2291,32 @@ program: PRED ATTRIBUTE IO COLON VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
+program: PRED ATTRIBUTE IO COLON ATTRIBUTE ARROW ATTRIBUTE RPAREN
+##
+## Ends in an error in state: 209.
+##
+## ctype_term -> type_term . constant [ SIGMA PRED_ATTRIBUTE PI IO FULLSTOP FRESHUV CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE ARROW ]
+##
+## The known suffix of the stack is as follows:
+## type_term
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 105, spurious reduction of production type_term -> ctype_term
+## In state 107, spurious reduction of production type_term -> ctype_term ARROW type_term
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
 program: PRED ATTRIBUTE IO COLON ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 225.
+## Ends in an error in state: 210.
 ##
 ## pred_item -> i_o COLON ctype_term . [ FULLSTOP CONJ ]
 ## type_term -> ctype_term . [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
-## type_term -> ctype_term . ARROW ctype_term [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
+## type_term -> ctype_term . ARROW type_term [ SIGMA PRED_ATTRIBUTE PI IO FRESHUV CUT CONSTANT CLAUSE_ATTRIBUTE ATTRIBUTE ]
 ##
 ## The known suffix of the stack is as follows:
 ## i_o COLON ctype_term
@@ -2331,9 +2324,33 @@ program: PRED ATTRIBUTE IO COLON ATTRIBUTE VDASH
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
+program: MODE LPAREN ATTRIBUTE IO RPAREN VDASH
+##
+## Ends in an error in state: 214.
+##
+## decl -> mode . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
+##
+## The known suffix of the stack is as follows:
+## mode
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+program: MACRO ATTRIBUTE VDASH
+##
+## Ends in an error in state: 216.
+##
+## decl -> macro . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
+##
+## The known suffix of the stack is as follows:
+## macro
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
 program: MODULE ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 229.
+## Ends in an error in state: 220.
 ##
 ## decl -> ignored . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
@@ -2345,7 +2362,7 @@ program: MODULE ATTRIBUTE VDASH
 
 program: RULE VDASH
 ##
-## Ends in an error in state: 240.
+## Ends in an error in state: 231.
 ##
 ## chr_rule -> chr_rule_attributes RULE . list(sequent) option(preceded(BIND,nonempty_list(sequent))) option(preceded(PIPE,term)) option(preceded(IFF,sequent)) [ FULLSTOP ]
 ##
@@ -2357,7 +2374,7 @@ program: RULE VDASH
 
 program: RULE LPAREN VDASH
 ##
-## Ends in an error in state: 241.
+## Ends in an error in state: 232.
 ##
 ## cterm_ -> LPAREN . term_ RPAREN [ STRING SIGMA PRED_ATTRIBUTE PIPE PI LPAREN LCURLY LBRACKET IO INTEGER IFF FULLSTOP FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE BIND ATTRIBUTE ]
 ## sequent -> LPAREN . constant COLON term RPAREN [ STRING SIGMA PRED_ATTRIBUTE PIPE PI LPAREN LCURLY LBRACKET IO INTEGER IFF FULLSTOP FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE BIND ATTRIBUTE ]
@@ -2370,7 +2387,7 @@ program: RULE LPAREN VDASH
 
 program: RULE LPAREN ATTRIBUTE USEONLY
 ##
-## Ends in an error in state: 242.
+## Ends in an error in state: 233.
 ##
 ## bterm_ -> constant . BIND term_ [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND RPAREN QDASH OR MOD IS DIV DARROW CONJ AS ARROW ]
 ## cterm_ -> constant . [ VDASH SYMB_TIMES SYMB_TICK SYMB_SLASH SYMB_SHARP SYMB_QMARK SYMB_PLUS SYMB_MINUS SYMB_LT SYMB_GT SYMB_EXP SYMB_EQ SYMB_BTICK SYMB_AT SYMB_AND STRING SIGMA RPAREN QDASH PRED_ATTRIBUTE PI OR MOD LPAREN LCURLY LBRACKET IS IO INTEGER FRESHUV FLOAT DIV DARROW CUT CONSTANT CONJ CLAUSE_ATTRIBUTE ATTRIBUTE AS ARROW ]
@@ -2384,7 +2401,7 @@ program: RULE LPAREN ATTRIBUTE USEONLY
 
 program: RULE LPAREN ATTRIBUTE COLON VDASH
 ##
-## Ends in an error in state: 243.
+## Ends in an error in state: 234.
 ##
 ## sequent -> LPAREN constant COLON . term RPAREN [ STRING SIGMA PRED_ATTRIBUTE PIPE PI LPAREN LCURLY LBRACKET IO INTEGER IFF FULLSTOP FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE BIND ATTRIBUTE ]
 ##
@@ -2396,7 +2413,7 @@ program: RULE LPAREN ATTRIBUTE COLON VDASH
 
 program: RULE LPAREN ATTRIBUTE COLON ATTRIBUTE RCURLY
 ##
-## Ends in an error in state: 244.
+## Ends in an error in state: 235.
 ##
 ## sequent -> LPAREN constant COLON term . RPAREN [ STRING SIGMA PRED_ATTRIBUTE PIPE PI LPAREN LCURLY LBRACKET IO INTEGER IFF FULLSTOP FRESHUV FLOAT CUT CONSTANT CLAUSE_ATTRIBUTE BIND ATTRIBUTE ]
 ##
@@ -2416,7 +2433,7 @@ program: RULE LPAREN ATTRIBUTE COLON ATTRIBUTE RCURLY
 
 program: RULE ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 246.
+## Ends in an error in state: 237.
 ##
 ## list(sequent) -> sequent . list(sequent) [ PIPE IFF FULLSTOP BIND ]
 ##
@@ -2428,7 +2445,7 @@ program: RULE ATTRIBUTE VDASH
 
 program: RULE BIND VDASH
 ##
-## Ends in an error in state: 250.
+## Ends in an error in state: 241.
 ##
 ## option(preceded(BIND,nonempty_list(sequent))) -> BIND . nonempty_list(sequent) [ PIPE IFF FULLSTOP ]
 ##
@@ -2440,7 +2457,7 @@ program: RULE BIND VDASH
 
 program: RULE BIND ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 251.
+## Ends in an error in state: 242.
 ##
 ## nonempty_list(sequent) -> sequent . [ PIPE IFF FULLSTOP ]
 ## nonempty_list(sequent) -> sequent . nonempty_list(sequent) [ PIPE IFF FULLSTOP ]
@@ -2453,7 +2470,7 @@ program: RULE BIND ATTRIBUTE VDASH
 
 program: RULE PIPE VDASH
 ##
-## Ends in an error in state: 255.
+## Ends in an error in state: 246.
 ##
 ## option(preceded(PIPE,term)) -> PIPE . term [ IFF FULLSTOP ]
 ##
@@ -2465,7 +2482,7 @@ program: RULE PIPE VDASH
 
 program: RULE PIPE ATTRIBUTE RCURLY
 ##
-## Ends in an error in state: 257.
+## Ends in an error in state: 248.
 ##
 ## chr_rule -> chr_rule_attributes RULE list(sequent) option(preceded(BIND,nonempty_list(sequent))) option(preceded(PIPE,term)) . option(preceded(IFF,sequent)) [ FULLSTOP ]
 ##
@@ -2479,14 +2496,14 @@ program: RULE PIPE ATTRIBUTE RCURLY
 ## In state 30, spurious reduction of production cterm_ -> constant
 ## In state 27, spurious reduction of production term_ -> cterm_
 ## In state 86, spurious reduction of production term -> term_
-## In state 256, spurious reduction of production option(preceded(PIPE,term)) -> PIPE term
+## In state 247, spurious reduction of production option(preceded(PIPE,term)) -> PIPE term
 ##
 
 <YOUR SYNTAX ERROR MESSAGE HERE>
 
 program: RULE IFF VDASH
 ##
-## Ends in an error in state: 258.
+## Ends in an error in state: 249.
 ##
 ## option(preceded(IFF,sequent)) -> IFF . sequent [ FULLSTOP ]
 ##
@@ -2498,7 +2515,7 @@ program: RULE IFF VDASH
 
 program: RULE IFF ATTRIBUTE VDASH
 ##
-## Ends in an error in state: 261.
+## Ends in an error in state: 252.
 ##
 ## decl -> chr_rule . FULLSTOP [ TYPEABBREV TYPE SYMB_TILDE STRING SIGMA SIG SHORTEN RULE RCURLY PRED_ATTRIBUTE PRED PI NAMESPACE MODULE MODE MACRO LPAREN LCURLY LBRACKET KIND IO INTEGER FULLSTOP FRESHUV FLOAT EXTERNAL EOF CUT CONSTRAINT CONSTANT COLON CLAUSE_ATTRIBUTE ATTRIBUTE ACCUMULATE ]
 ##
