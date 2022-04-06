@@ -30,6 +30,7 @@ depopts: [
 ]
 conflicts: [
   "camlp5" {< "8"}
+  "camlp5" {ocaml:version >= "4.14.0"}
 ]
 synopsis: "ELPI - Embeddable λProlog Interpreter"
 description: """
