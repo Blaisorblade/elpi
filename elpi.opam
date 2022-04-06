@@ -30,7 +30,6 @@ depends: [
 # ]
 conflicts: [
   "camlp5" {ocaml:version >= "4.14.0"}
-  "camlp5" {< "8"}
 ]
 synopsis: "ELPI - Embeddable λProlog Interpreter"
 description: """
