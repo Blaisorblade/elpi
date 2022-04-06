@@ -25,9 +25,9 @@ depends: [
   "dune" {>= "2.2.0"}
   "conf-time" {with-test}
 ]
-depopts: [
-  "camlp5" {> "7.99"}
-]
+# depopts: [
+#   "camlp5" {> "7.99"}
+# ]
 conflicts: [
   "camlp5" {ocaml:version >= "4.14.0"}
   "camlp5" {< "8"}
